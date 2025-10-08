@@ -1,0 +1,1 @@
+import moduleName from 'delta-comic-core';
