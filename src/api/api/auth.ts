@@ -1,0 +1,10 @@
+import { Utils } from 'delta-comic-core'
+import type { jm as JmType } from '..'
+import { jmStore } from '@/store'
+import { _jmUser } from '../user'
+export namespace _jmApiAuth {
+  const { PromiseContent } = Utils.data
+  export const login = PromiseContent.fromAsyncFunction((data: JmType.auth.LoginData, signal?: AbortSignal) => jmStore.api.postForm<JmType.user.RawUserMe>('/login', data, { signal }).then(v => new _jmUser.UserMe(v)))
+  export const signUp = PromiseContent.fromAsyncFunction((data: JmType.auth.SignupData, signal?: AbortSignal) => jmStore.api.post('/register', data, { signal, params: data }))
+  export const logout = PromiseContent.fromAsyncFunction((signal?: AbortSignal) => jmStore.api.postForm<void>('/logout', undefined, { signal }))
+}

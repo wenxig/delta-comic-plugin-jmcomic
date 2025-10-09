@@ -24,6 +24,7 @@ export declare module 'axios' {
   interface AxiosRequestConfig {
     __retryCount?: number
     disretry?: boolean
+    jm_key?: string
   }
 }
 
