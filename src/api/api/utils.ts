@@ -1,7 +1,7 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
 import { isEmpty, isEqual, last, uniq } from "lodash-es"
-import { JmPage } from "../page"
+import { JmComicPage } from "../page"
 import { Utils } from "delta-comic-core"
 
 export const spiltUsers = (userString = '') => userString.split(/\,|，|\&|\||、|＆|(\sand\s)|(\s和\s)|(\s[xX]\s)/ig).filter(Boolean).map(v => v.trim()).filter(Boolean)
@@ -23,7 +23,7 @@ export const createLessToUniItem = (comic: jm.comic.RawLessComic) => new jm.comi
   isLiked: comic.liked,
   updateTime: Number(comic.addtime),
   customIsAI: false,
-  contentType: JmPage.comicType,
+  contentType: JmComicPage.contentType,
   length: '',
   epLength: comic.series.length.toString(),
   thisEp: {
@@ -51,7 +51,7 @@ export const createCommonToUniItem = (comic: jm.comic.RawCommonComic) => new jm.
   isLiked: comic.liked,
   updateTime: comic.update_at && Number(comic.update_at),
   customIsAI: false,
-  contentType: JmPage.comicType,
+  contentType: JmComicPage.contentType,
   length: '',
   epLength: '',
   thisEp: {
@@ -77,7 +77,7 @@ export const createRecommendToUniItem = (comic: jm.comic.RawRecommendComic) => n
   title: comic.name,
   id: comic.id,
   customIsAI: false,
-  contentType: JmPage.comicType,
+  contentType: JmComicPage.contentType,
   length: '',
   epLength: '',
   thisEp: {
@@ -103,7 +103,7 @@ export const createFullToUniItem = (comic: jm.comic.RawFullComic) => new jm.comi
   title: comic.name,
   id: comic.id,
   customIsAI: false,
-  contentType: JmPage.comicType,
+  contentType: JmComicPage.contentType,
   length: comic.images.length.toString(),
   epLength: comic.series.length.toString(),
   thisEp: {

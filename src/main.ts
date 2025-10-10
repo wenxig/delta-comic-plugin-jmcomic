@@ -2,26 +2,14 @@ import "@/index.css"
 import { definePlugin, Utils } from "delta-comic-core"
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
-import { apiGetter, image } from "./api/forks"
+import { api, apiGetter, image } from "./api/forks"
 import { inRange, isEmpty, isString } from 'lodash-es'
 import axios from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
-const apiGetterAxios = Utils.request.createAxios(() => '', {}, api => {
-  api.interceptors.response.use(config => {
-    const decrypted = AES.decrypt(
-      config.data,
-      MD5("diosfjckwpqpdfjkvnqQjsik").toString(enc.Utf8),
-      {
-        mode: mode.ECB,  // 使用 ECB 模式
-      }
-    )
-    // 返回解密后的 JSON 数据
-    config.data = JSON.parse(decrypted.toString(enc.Utf8))
-    return config
-  })
-  return api
-})
+import { JmComicPage } from "./api/page"
+import Card from "./components/card.vue"
+import CommentRow from "./components/commentRow.vue"
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -34,26 +22,7 @@ definePlugin({
   name: pluginName,
   api: {
     api: {
-      forks() {
-        const abort = new AbortController()
-        const apiGetters = apiGetter
-        let apis = new Array<string>()
-        try {
-          for (const api of apiGetters) {
-            apiGetterAxios.get<{
-              Setting: string[],
-              Server: string[]
-            }>(api, { signal: abort.signal }).then(res => {
-              apis = res.Server
-              abort.abort()
-            })
-          }
-        } catch { }
-        if (isEmpty(apis)) {
-          throw new Error('[plugin jmcomic] not found any apis.')
-        }
-        return apis
-      },
+      forks: () => Promise.resolve(api),
       test: (fork, signal) => testAxios.get(fork, { signal })
     }
   },
@@ -72,7 +41,7 @@ definePlugin({
       const f = ins.api.api
       const api = Utils.request.createAxios(() => f, {}, ins => {
         ins.interceptors.request.use(requestConfig => {
-          const authorization = jmStore.loginToken
+          const authorization = jmStore.loginToken.value ?? ''
           const key = Date.now().toString()
           const token = MD5(`${key}185Hcomic3PAPP7R`).toString()
           const tokenParam = `${key},1.7.9`
@@ -82,7 +51,7 @@ definePlugin({
           if (authorization) requestConfig.headers.set('Authorization', `Bearer ${authorization}`)
           const baseHeader = {
             Version: "v1.2.9",
-            Cookie: `AVS=${jmStore.loginAvs || ''}`,
+            Cookie: `AVS=${jmStore.loginAvs.value || ''}`,
           }
           for (const key in baseHeader) {
             if (Object.prototype.hasOwnProperty.call(baseHeader, key)) {
@@ -117,21 +86,21 @@ definePlugin({
           else res.data.data = res.data
           return res
         })
-        jmStore.api = api
-        // Utils.eventBus.SharedFunction.define(bika.api.search.getRandomComic, pluginName, 'getRandomProvide')
         return ins
       })
+      jmStore.api.value = api
+      Utils.eventBus.SharedFunction.define(jm.api.search.getRandomComics, pluginName, 'getRandomProvide')
     }
   },
   auth: {
     passSelect: async () => {
       console.log(jmStore.loginData)
-      return (jmStore.loginData.email !== '') ? 'logIn' : false
+      return (jmStore.loginData.value.password !== '') ? 'logIn' : false
     },
     async logIn(by) {
-      if (jmStore.loginData.email !== '') var form = jmStore.loginData
-      else var form = jmStore.loginData = await by.form({
-        email: {
+      if (jmStore.loginData.value.password !== '') var form = jmStore.loginData.value
+      else var form = jmStore.loginData.value = await by.form({
+        username: {
           type: 'string',
           info: '用户名'
         },
@@ -140,18 +109,60 @@ definePlugin({
           info: '密码'
         }
       })
-      const res = await bika.api.auth.login(form)
-      console.log(res)
-      jmStore.loginToken = res.token
+      const res = await jm.api.auth.login(form)
+      console.log('[plugin jm] login:', res)
+      jmStore.loginToken.value = res.token
+      // res.
     },
     async signUp(by) {
       const form = await by.form({
+        username: {
+          type: 'string',
+          info: '用户名'
+        },
+        email: {
+          type: 'string',
+          info: '用户名'
+        },
+        password: {
+          type: 'string',
+          info: '密码'
+        },
+        password_confirm: {
+          type: 'string',
+          info: '密码'
+        },
+        gender: {
+          type: 'radio',
+          comp: 'radio',
+          info: '性别',
+          selects: [{
+            label: '男',
+            value: 'Male'
+          }, {
+            label: '女',
+            value: 'Female'
+          }]
+        },
       })
-      await bika.api.auth.signUp({
+      await jm.api.auth.signUp({
         ...form,
-        birthday: dayjs(form.birthday).format('YYYY-MM-DD'),
-        gender: <bika.user.Gender>form.gender
+        gender: <jm.user.Gender>form.gender
       })
     }
   },
+  content: {
+    contentPage: {
+      [JmComicPage.contentType]: JmComicPage
+    },
+    layout: {
+      [JmComicPage.contentType]: window.$layout.default
+    },
+    itemCard: {
+      [JmComicPage.contentType]: Card
+    },
+    commentRow: {
+      [JmComicPage.contentType]: CommentRow
+    }
+  }
 })

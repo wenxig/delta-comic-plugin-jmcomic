@@ -18,16 +18,16 @@ export namespace _jmImage {
     if (0 <= key && key <= 9) return key * 2 + 2
     else return 10
   }
-  export const decoder = async (nowPath: string, img: uni.image.Image): Promise<[path: string, exit: string]> => {
+  export const decoder = async (nowPath: string, img: uni.image.Image): Promise<[path: string, exit: false]> => {
     if (
       nowPath.indexOf('.gif') > 0 ||
       (Number(img.$$meta!.id) < 220980)
     ) {
-      return [nowPath, '']
+      return [nowPath, false]
     }
 
     // 避免重复解密
-    if (cache.has(nowPath)) return [await cache.get(nowPath)!, '']
+    if (cache.has(nowPath)) return [await cache.get(nowPath)!, false]
     const promise = Promise.withResolvers<string>()
     cache.set(nowPath, promise.promise)
 
@@ -68,6 +68,6 @@ export namespace _jmImage {
     }
     const dataurl = canvas.toDataURL("image/webp", 1)
     promise.resolve(dataurl)
-    return [dataurl, '']
+    return [dataurl, false]
   }
 }

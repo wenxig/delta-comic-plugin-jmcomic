@@ -1,9 +1,13 @@
 import type { jm } from "@/api"
 import type { Utils } from "delta-comic-core"
 import { useLocalStorage } from '@vueuse/core'
+import { shallowRef } from "vue"
 export namespace jmStore {
-  export let api: Utils.request.Requester
-  export let loginToken: string | undefined
-  export let loginAvs: string | undefined
-  export const loginData = useLocalStorage('jm.auth.LoginData')
+  export const api = shallowRef<Utils.request.Requester>()
+  export const loginToken = shallowRef<string | undefined>()
+  export const loginAvs = shallowRef<string | undefined>()
+  export const loginData = useLocalStorage<jm.auth.LoginData>('jm.auth.LoginData', {
+    username: '',
+    password: ''
+  })
 }

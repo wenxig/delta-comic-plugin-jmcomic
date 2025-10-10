@@ -20,17 +20,15 @@ export default defineConfig({
         VantResolver()
       ],
     }),
-    // legacyPlugin({
-    //   targets: ['defaults', 'ie >= 11', 'chrome 52'],
-    //   additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
-    //   renderLegacyChunks: true,
-    //   renderModernChunks: false,
-    // }),
+    legacyPlugin({
+      renderLegacyChunks: false,
+      modernPolyfills: true
+    }),
     tailwindcss(),
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        name: 'bika',
+        name: 'jmcomic',
         version: _package.version,
 
       },
