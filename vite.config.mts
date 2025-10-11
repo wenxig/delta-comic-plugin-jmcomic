@@ -20,10 +20,10 @@ export default defineConfig({
         VantResolver()
       ],
     }),
-    legacyPlugin({
-      renderLegacyChunks: false,
-      modernPolyfills: true
-    }),
+    // legacyPlugin({
+    //   renderLegacyChunks: false,
+    //   modernPolyfills: true
+    // }),
     tailwindcss(),
     monkey({
       entry: 'src/main.ts',

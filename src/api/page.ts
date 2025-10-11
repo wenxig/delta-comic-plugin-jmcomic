@@ -14,15 +14,16 @@ export class JmComicPage extends uni.content.ContentPage {
   public images = Utils.data.PromiseContent.withResolvers<uni.image.Image[]>()
   public override loadAll() {
     return Promise.all([
-      this.detail.content.isLoading.value || jm.api.comic.getComic(this.id).then(v => {
+      this.detail.content.isLoading.value || jm.api.comic.getComic(this.ep).then(v => {
         const comic: jm.comic.RawFullComic = v.$$meta.comic
         this.detail.resolve(v)
         this.eps.resolve(comic.series.map(v => new uni.ep.Ep({
           $$plugin: pluginName,
-          index: v.sort,
+          index: v.id,
           name: v.name,
           $$meta: {
-            raw: v
+            raw: v,
+            from: 'page create'
           }
         })))
         this.recommends.resolve(comic.related_list.map(createRecommendToUniItem))

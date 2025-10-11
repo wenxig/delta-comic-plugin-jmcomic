@@ -1,15 +1,16 @@
 import "@/index.css"
-import { definePlugin, Utils } from "delta-comic-core"
+import { definePlugin, uni, Utils } from "delta-comic-core"
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
-import { api, apiGetter, image } from "./api/forks"
-import { inRange, isEmpty, isString } from 'lodash-es'
+import { api, image } from "./api/forks"
+import { inRange, isString } from 'lodash-es'
 import axios from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
 import { JmComicPage } from "./api/page"
 import Card from "./components/card.vue"
 import CommentRow from "./components/commentRow.vue"
+import User from "./components/user.vue"
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -30,7 +31,7 @@ definePlugin({
     forks: {
       default: image
     },
-    test: '/media/users/5128018.jpg',
+    test: '/media/photos/1205243/00001.webp',
     process: {
       comicDecode: jm.image.decoder
     }
@@ -112,7 +113,8 @@ definePlugin({
       const res = await jm.api.auth.login(form)
       console.log('[plugin jm] login:', res)
       jmStore.loginToken.value = res.token
-      // res.
+      jmStore.user.value = res
+      uni.user.User.userBase.set(pluginName, jmStore.user.value!)
     },
     async signUp(by) {
       const form = await by.form({
@@ -149,6 +151,11 @@ definePlugin({
         ...form,
         gender: <jm.user.Gender>form.gender
       })
+      jmStore.loginData.value = {
+        password: form.password,
+        username: form.username
+      }
+      return await this.logIn(by)
     }
   },
   content: {
@@ -164,5 +171,24 @@ definePlugin({
     commentRow: {
       [JmComicPage.contentType]: CommentRow
     }
-  }
+  },
+  user: {
+    card: User,
+    edit: User,
+  },
+  otherProgress: [
+    {
+      name: '签到',
+      async call(setDescription) {
+        setDescription('签到中')
+        try {
+          await jm.api.user.dailyCheck()
+          setDescription('签到成功')
+        } catch (error) {
+          setDescription('签到失败')
+          throw error
+        }
+      }
+    }
+  ]
 })

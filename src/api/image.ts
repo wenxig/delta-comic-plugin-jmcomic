@@ -1,7 +1,10 @@
+import { pluginName } from "@/symbol"
 import axios from "axios"
 import { MD5 } from "crypto-js"
-import { Utils, type uni } from "delta-comic-core"
+import { uni, Utils } from "delta-comic-core"
 import { padStart } from "lodash-es"
+import { useWebWorkerFn } from '@vueuse/core'
+
 export namespace _jmImage {
   const api = axios.create()
   api.interceptors.response.use(undefined, Utils.request.utilInterceptors.checkIsAxiosError)
@@ -32,11 +35,9 @@ export namespace _jmImage {
     cache.set(nowPath, promise.promise)
 
     // 1) 获取 blob（确保图片允许 CORS）
-    const blob = await Utils.request.utilInterceptors.useForceRetry(() => api.get<Blob>(nowPath, {
+    const blob = await Utils.request.utilInterceptors.useForceRetry(() => api.get<Blob>(`${uni.image.Image.activeFork.get(`${pluginName}:${img.forkNamespace}`)}/${nowPath}`, {
       responseType: 'blob'
     }))
-
-    // 2) 用浏览器解码为 bitmap（支持 webp）
     const bitmap = await createImageBitmap(blob)
     const width = bitmap.width, height = bitmap.height
 
@@ -66,8 +67,11 @@ export namespace _jmImage {
       ctx.drawImage(bitmap, 0, ty0, width, segH, 0, dy, width, segH)
       dy += segH
     }
-    const dataurl = canvas.toDataURL("image/webp", 1)
-    promise.resolve(dataurl)
-    return [dataurl, false]
+    canvas.toBlob(blob => {
+      if (!blob) return promise.reject(new Error('[plugin jmcomic]image decode fail, cannot convert to blob'))
+      const dataurl = URL.createObjectURL(blob)
+      promise.resolve(dataurl)
+    })//toDataURL("image/webp", 1)
+    return [await promise.promise, false]
   }
 }

@@ -109,6 +109,9 @@ export namespace _jmUser {
   }
 
   export class CommentUser extends uni.user.User {
+    public static is(v: unknown): v is CommentUser {
+      return v instanceof CommentUser
+    }
     override customUser
     constructor(c: _jmComment.RawComment) {
       super({

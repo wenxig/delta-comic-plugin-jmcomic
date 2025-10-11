@@ -10,4 +10,5 @@ export namespace jmStore {
     username: '',
     password: ''
   })
+  export const user = shallowRef<jm.user.UserMe>()
 }

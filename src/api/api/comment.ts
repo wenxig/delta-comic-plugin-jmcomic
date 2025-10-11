@@ -21,4 +21,6 @@ export namespace _jmApiComment {
 
   export const sendComment = PromiseContent.fromAsyncFunction((comicId: string, content: string, isSpoiler: boolean, signal?: AbortSignal) => jmStore.api.value!.postForm('/comment', { aid: comicId, content, isSpoiler }, { signal }))
   export const sendChildComment = PromiseContent.fromAsyncFunction((comicId: string, parentCId: string, content: string, isSpoiler: boolean, signal?: AbortSignal) => jmStore.api.value!.postForm('/comment', { aid: comicId, content, isSpoiler, comment_id: parentCId }, { signal }))
+
+  export const likeComment = PromiseContent.fromAsyncFunction((comicId: string, cid: string, signal?: AbortSignal) => jmStore.api.value!.postForm('/comment_vote', { aid: comicId, cid }, { signal }))
 }

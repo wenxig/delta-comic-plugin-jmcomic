@@ -27,7 +27,7 @@ export namespace _jmApiSearch {
   export const getWeekBestComic = PromiseContent.fromAsyncFunction((id: number, type: string, signal?: AbortSignal) =>
     jmStore.api.value!.get<JmType.search.WeekBestItem>(`/week/filter`, { signal, params: { type, id } }).then(v => v.list.map(createCommonToUniItem)))
 
-  export const getRandomComics = PromiseContent.fromAsyncFunction(async (signal?: AbortSignal) => await _jmApiSearch.utils.byCategory('', undefined, random(1, 200), signal))
+  export const getRandomComics = PromiseContent.fromAsyncFunction(async (signal?: AbortSignal) => await _jmApiSearch.utils.byCategory('', undefined, random(1, 100), signal))
   export const createRandomComicStream = () => jmStream((_page, signal) => getRandomComics(signal))
 
   let lvb: PromiseLike<[JmType.comic.JmItem[], JmType.comic.JmItem[], JmType.comic.JmItem[]]> | undefined = undefined

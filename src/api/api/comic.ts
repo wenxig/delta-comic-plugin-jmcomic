@@ -18,7 +18,7 @@ export namespace _jmApiComic {
       const page = Number(img.match(/\d+/g)?.[0])
       return uni.image.Image.create({
         $$plugin: pluginName,
-        forkNamespace: '',
+        forkNamespace: 'default',
         path: `/media/photos/${id}/${img}`,
         processSteps: [
           'comicDecode'

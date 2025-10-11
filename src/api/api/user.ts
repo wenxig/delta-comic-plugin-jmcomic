@@ -28,4 +28,13 @@ export namespace _jmApiUser {
     return list.map(createCommonToUniItem)
   })
 
+  export const dailyCheck = PromiseContent.fromAsyncFunction(async () => {
+    const user = jmStore.user.value
+    const dailyInfo = await jmStore.api.value!.get<{
+      daily_id: number
+    }>(`/daily?user_id=${user?.id}`)
+    try {
+      await jmStore.api.value!.post(`/daily_chk?user_id=${user?.id}&daily_id=${dailyInfo.daily_id}`)
+    } catch { }
+  })
 } 
