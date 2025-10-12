@@ -30,7 +30,7 @@ export default defineConfig({
       userscript: {
         name: 'jmcomic',
         version: _package.version,
-
+        author: _package.author.name
       },
       build: {
         externalGlobals: {

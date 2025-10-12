@@ -11,6 +11,8 @@ import { JmComicPage } from "./api/page"
 import Card from "./components/card.vue"
 import CommentRow from "./components/commentRow.vue"
 import User from "./components/user.vue"
+import Tabbar from "./components/tabbar.vue"
+import WeekPromote from "./components/weekPromote.vue"
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -37,7 +39,7 @@ definePlugin({
     }
   },
   onBooted: ins => {
-    console.log('[plugin jmcomic] setup...', ins, ins.api?.api)
+    console.log('setup...', ins, ins.api?.api)
     if (ins.api?.api) {
       const f = ins.api.api
       const api = Utils.request.createAxios(() => f, {}, ins => {
@@ -90,7 +92,7 @@ definePlugin({
         return ins
       })
       jmStore.api.value = api
-      Utils.eventBus.SharedFunction.define(jm.api.search.getRandomComics, pluginName, 'getRandomProvide')
+      Utils.eventBus.SharedFunction.define(s => jm.api.search.getRandomComics(s).then(v => v.list), pluginName, 'getRandomProvide')
     }
   },
   auth: {
@@ -111,9 +113,10 @@ definePlugin({
         }
       })
       const res = await jm.api.auth.login(form)
-      console.log('[plugin jm] login:', res)
-      jmStore.loginToken.value = res.token
+      jmStore.loginToken.value = res.customUser.user.jwttoken
+      jmStore.loginAvs.value = res.customUser.user.s
       jmStore.user.value = res
+      console.log('login:', res, jmStore.user.value)
       uni.user.User.userBase.set(pluginName, jmStore.user.value!)
     },
     async signUp(by) {
@@ -186,6 +189,56 @@ definePlugin({
           setDescription('签到成功')
         } catch (error) {
           setDescription('签到失败')
+          throw error
+        }
+      }
+    }, {
+      name: '预加载数据',
+      async call(setDescription) {
+        setDescription('获取分类 & 推荐')
+        try {
+          const [cate, promote, wb] = await Promise.all([
+            jm.api.search.getCategories(),
+            jm.api.search.getPromote(),
+            jm.api.search.getWeekBestList(),
+          ])
+          console.log('cate', cate)
+          uni.content.ContentPage.setCategories(pluginName, ...cate.categories.filter(v => !!v.sub_categories).flatMap(v => v.sub_categories!.map(c => ({
+            title: c.name,
+            namespace: v.name,
+            search: {
+              methodId: '',
+              input: '',
+              sort: ''
+            }
+          }))), ...cate.blocks.flatMap(v => v.content.map(c => ({
+            title: c,
+            namespace: v.title,
+            search: {
+              methodId: '',
+              input: '',
+              sort: ''
+            }
+          }))))
+
+          console.log('wb', wb)
+          jmStore.wb.value = wb
+          uni.content.ContentPage.setTabbar(pluginName, {
+            comp: WeekPromote,
+            id: 'weekPromote',
+            title: '每周推荐'
+          })
+
+          console.log('promote', promote)
+          jmStore.promotes.value = promote
+          uni.content.ContentPage.setTabbar(pluginName, ...promote.map(v => ({
+            title: v.title,
+            id: v.id,
+            comp: Tabbar
+          })))
+          setDescription('成功')
+        } catch (error) {
+          setDescription('失败')
           throw error
         }
       }

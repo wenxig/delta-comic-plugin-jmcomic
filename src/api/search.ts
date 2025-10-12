@@ -78,4 +78,24 @@ export namespace _jmSearch {
     week: _jmComic.JmItem[]
     month: _jmComic.JmItem[]
   }
+
+  export interface CategoriesResult {
+    categories: CategoryResult[]
+    blocks: {
+      title: string
+      content: string[]
+    }[]
+  }
+  export interface CategoryResult {
+    id: number
+    name: string
+    slug: string
+    total_albums: string
+    type: string
+    sub_categories?: {
+      CID: string
+      name: string
+      slug: string
+    }[]
+  }
 }

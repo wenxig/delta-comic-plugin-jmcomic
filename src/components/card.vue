@@ -2,6 +2,7 @@
 import { LikeOutlined } from '@vicons/antd'
 import { AccessTimeRound, DrawOutlined } from '@vicons/material'
 import { Comp, uni, Utils } from 'delta-comic-core'
+import { isEmpty } from 'lodash-es';
 import { StyleValue } from 'vue'
 const $props = defineProps<{
   item: uni.item.Item
@@ -30,10 +31,12 @@ const $emit = defineEmits<{
         <span>{{ item.likeNumber }}</span>
       </span>
       <template v-else>
-        <span v-for="category of item.categories.slice(0, 2)">
-          <VanIcon class="mr-0.5" name="apps-o" size="14px" color="white" />
-          <span>{{ category }}</span>
-        </span>
+        <template v-for="category of item.categories">
+          <span v-if="!isEmpty(category)">
+            <VanIcon class="mr-0.5" name="apps-o" size="14px" color="white" />
+            <span>{{ category }}</span>
+          </span>
+        </template>
       </template>
     </template>
     <div class="flex gap-0.5 items-center" v-if="type == 'small'">

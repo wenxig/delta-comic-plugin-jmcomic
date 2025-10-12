@@ -10,11 +10,13 @@ declare module 'vue' {
   export interface GlobalComponents {
     Card: typeof import('./src/components/card.vue')['default']
     CommentRow: typeof import('./src/components/commentRow.vue')['default']
+    Ecit: typeof import('./src/components/ecit.vue')['default']
     Edit: typeof import('./src/components/edit.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NIcon: typeof import('naive-ui')['NIcon']
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
     NProgress: typeof import('naive-ui')['NProgress']
+    NSelect: typeof import('naive-ui')['NSelect']
     NSpin: typeof import('naive-ui')['NSpin']
     NThing: typeof import('naive-ui')['NThing']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -34,5 +36,6 @@ declare module 'vue' {
     VanTag: typeof import('vant/es')['Tag']
     VanTextEllipsis: typeof import('vant/es')['TextEllipsis']
     View: typeof import('./src/components/view.vue')['default']
+    WeekPromote: typeof import('./src/components/weekPromote.vue')['default']
   }
 }

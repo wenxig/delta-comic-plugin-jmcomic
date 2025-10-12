@@ -13,8 +13,9 @@ import { AnimatePresence, motion } from 'motion-v'
 import { watch } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { JmComicPage } from '@/api/page'
-import { Comp, Store } from 'delta-comic-core'
+import { Comp } from 'delta-comic-core'
 import { useFullscreen } from '@vueuse/core'
+import { config } from '@/config'
 const $props = defineProps<{
   page: JmComicPage
 }>()
@@ -32,7 +33,6 @@ const $emit = defineEmits<{
   click: []
   reloadPages: []
 }>()
-const config = Store.useConfig()
 const swiper = shallowRef<SwiperClass>()
 
 const images = computed(() => $props.page.images.content.data.value)
@@ -138,9 +138,9 @@ const nowEp = computed(() => $props.page.eps.content.data.value.find(v => v.inde
 <template>
   <NSpin :show="isEmpty(images)" class="size-full *:first:size-full relative bg-black pt-safe">
     <Swiper :modules="[Virtual, Zoom, HashNavigation, Keyboard]" @swiper="sw => swiper = sw" :initialSlide="pageOnIndex"
-      :slidesPerView="config['app.read.twoImage'] ? 2 : 1" @slideChange="sw => pageOnIndex = sw.activeIndex"
+      :slidesPerView="config['jmcomic.doubleImage'] ? 2 : 1" @slideChange="sw => pageOnIndex = sw.activeIndex"
       class="size-full" @double-tap="handleDbTap" @touch-move="handleTouchmove" @touch-end="handleTouchend"
-      :virtual="{ enabled: true, addSlidesAfter: config['app.read.preloadImageNumbers'], addSlidesBefore: config['app.read.preloadImageNumbers'] }"
+      :virtual="{ enabled: true, addSlidesAfter: config['jmcomic.preloadImage'], addSlidesBefore: config['jmcomic.preloadImage'] }"
       @init="onInit" zoom keyboard direction="horizontal" @touch-start="handleTouchstart">
       <SwiperSlide v-for="(image, index) of images" :key="index" :virtualIndex="index" :data-hash="index + 1"
         class="overflow-hidden">
@@ -206,11 +206,6 @@ const nowEp = computed(() => $props.page.eps.content.data.value.find(v => v.inde
           </div>
         </Comp.Var>
         <div class="w-full *:!flex *:items-center *:justify-center flex gap-4 justify-end pr-4">
-          <div>
-            <NButton text color="#fff">
-              选集
-            </NButton>
-          </div>
           <div>
             <NButton class="!text-3xl " text color="#fff" @click="fcCrt.exit()">
               <NIcon>

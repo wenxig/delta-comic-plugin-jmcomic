@@ -1,0 +1,51 @@
+<script setup lang='ts'>
+import { jm } from '@/api'
+import { jmStore } from '@/store'
+import { useResizeObserver, until } from '@vueuse/core'
+import { Comp, PluginConfigSearchTabbar, Store, uni, Utils } from 'delta-comic-core'
+import { isEmpty } from 'lodash-es'
+import { computed, onMounted, ref, shallowRef } from 'vue'
+import { ComponentExposed } from 'vue-component-type-helpers'
+import { useRouter } from 'vue-router'
+const $props = defineProps<{
+  isActive: boolean
+  tabbar: PluginConfigSearchTabbar
+}>()
+const $router = useRouter()
+
+const list = shallowRef<ComponentExposed<typeof Comp.Waterfall>>()
+const temp = Store.useTemp()
+const orderStoreSaveTemp = temp.$applyRaw(`orderJmStoreSave`, () => new Map<string, Utils.data.RStream<jm.comic.JmItem>>())
+const orderScoreSaveTemp = temp.$applyRaw(`orderJmScoreSave`, () => new Map<string, number>())
+const containBound = ref<DOMRectReadOnly>()
+useResizeObserver(() => <HTMLDivElement | null>list.value?.scrollParent?.firstElementChild, ([b]) => containBound.value = b.contentRect)
+onMounted(async () => {
+  if (!isEmpty(dataSource.value.data.value)) {
+    await until(() => (containBound.value?.height ?? 0) > 8).toBeTruthy()
+    list.value?.scrollParent?.scroll(0, orderScoreSaveTemp.get($props.tabbar.id) ?? 0)
+  }
+})
+const stop = $router.beforeEach(() => {
+  stop()
+  orderScoreSaveTemp.set($props.tabbar.id, list.value?.scrollTop ?? 0)
+})
+const dataSource = computed(() => {
+  if (!orderStoreSaveTemp.has($props.tabbar.id))
+    orderStoreSaveTemp.set($props.tabbar.id, jm.api.search.createPromoteStream(Number($props.tabbar.id))
+      .setupData(jmStore.promotes.value?.find(v => v.id == $props.tabbar.id)?.$content ?? []))
+  return orderStoreSaveTemp.get($props.tabbar.id)!
+})
+</script>
+
+<template>
+  <Comp.Waterfall :source="dataSource" v-slot="{ item }" ref="list">
+    <Card :item free-height type="small" @click="$router.force.push({
+      name: 'content',
+      params: {
+        contentType: uni.content.ContentPage.toContentTypeString(item.contentType),
+        id: item.id,
+        ep: item.$thisEp.index
+      }
+    })" />
+  </Comp.Waterfall>
+</template>

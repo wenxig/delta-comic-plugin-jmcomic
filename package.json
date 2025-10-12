@@ -2,6 +2,10 @@
   "name": "delta-comic-bika-jmcomic",
   "version": "0.0.1",
   "description": "何以哀怮",
+  "author": {
+    "name": "wenxig",
+    "email": "wenxinguo12@gmail.com"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

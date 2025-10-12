@@ -14,9 +14,8 @@ export class JmComicPage extends uni.content.ContentPage {
   public images = Utils.data.PromiseContent.withResolvers<uni.image.Image[]>()
   public override loadAll() {
     return Promise.all([
-      this.detail.content.isLoading.value || jm.api.comic.getComic(this.ep).then(v => {
+      this.detail.content.isLoading.value || this.detail.content.loadPromise(jm.api.comic.getComic(this.ep).then(v => {
         const comic: jm.comic.RawFullComic = v.$$meta.comic
-        this.detail.resolve(v)
         this.eps.resolve(comic.series.map(v => new uni.ep.Ep({
           $$plugin: pluginName,
           index: v.id,
@@ -28,8 +27,9 @@ export class JmComicPage extends uni.content.ContentPage {
         })))
         this.recommends.resolve(comic.related_list.map(createRecommendToUniItem))
         this.pid.resolve(v.id)
-      }),
-      this.images.content.isLoading.value || jm.api.comic.getComicPages(this.id).then(async v => this.images.resolve(v)),
+        return v
+      })),
+      this.images.content.isLoading.value || this.images.content.loadPromise(jm.api.comic.getComicPages(this.id)),
     ])
   }
   public override comments = jm.api.comment.createCommentsStream(this.id)

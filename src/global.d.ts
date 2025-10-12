@@ -28,4 +28,21 @@ export declare module 'axios' {
   }
 }
 
+export declare module 'vue-router' {
+  interface Router {
+    force: {
+      push: Router['push']
+      replace: Router['replace']
+    }
+  }
+  interface RouteMeta {
+    statusBar?: {
+      overlaysWebView?: boolean
+      style?: Style
+      backgroundColor?: string
+    }
+    force?: boolean
+  }
+}
+
 export { }

@@ -99,7 +99,8 @@ export namespace _jmUser {
           $$plugin: pluginName,
           forkNamespace: 'default',
           path: `/media/users/${v.uid}.jpg`
-        }
+        },
+        $$plugin: pluginName
       })
       this.customUser = {
         user: v,
@@ -117,11 +118,12 @@ export namespace _jmUser {
       super({
         id: c.UID,
         name: c.username,
-        avatar: {
+        avatar: c.photo.includes('nopic') ? undefined : {
           $$plugin: pluginName,
           forkNamespace: 'default',
-          path: `/media/users/${c.UID}.jpg`
-        }
+          path: `/media/users/${c.photo}`
+        },
+        $$plugin: pluginName
       })
       this.customUser = {
         user: c,

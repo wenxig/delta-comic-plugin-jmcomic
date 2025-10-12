@@ -1,6 +1,6 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
-import { isEmpty, isEqual, last, uniq } from "lodash-es"
+import { ceil, isEmpty, uniq } from "lodash-es"
 import { JmComicPage } from "../page"
 import { Utils } from "delta-comic-core"
 
@@ -120,14 +120,15 @@ export const createFullToUniItem = (comic: jm.comic.RawFullComic) => new jm.comi
   viewNumber: Number(comic.total_views)
 })
 
-export const jmStream = <T>(api: (page: number, signal: AbortSignal) => PromiseLike<T[]>) => Utils.data.Stream.create<T>(async function* (signal, that) {
+export const jmStream = <T>(api: (page: number, signal: AbortSignal) => PromiseLike<{ list: T[], total: number }>) => Utils.data.Stream.create<T>(async function* (signal, that) {
   while (true) {
     if (that.pages.value <= that.page.value) return
     that.page.value++
-    const result = await api(that.page.value, signal)
-    if (isEqual(last(result), last(that._data))) return
-    that.pages.value = that.page.value + 1
+    const { list: result, total } = await api(that.page.value, signal)
     if (that.page.value == 1) that.pageSize.value = result.length
+    that.total.value = total
+    // eg: total: 300 result: 60 pages: t/r向上取整
+    that.pages.value = ceil(total / that.pageSize.value)
     yield result
   }
 })

@@ -5,7 +5,6 @@ import { computed } from 'vue'
 import userIcon from '@/assets/images/userIcon.webp?url'
 import { Comp, uni, Utils } from 'delta-comic-core'
 import { jm } from '@/api'
-import { pluginName } from '@/symbol'
 const $props = defineProps<{
   comment: jm.comment.Comment,//uni.comment.Comment
   item: uni.item.Item
@@ -17,6 +16,7 @@ const raw = computed(() => $props.comment.sender.customUser as {
 })
 const $emit = defineEmits<{
   click: [c: uni.comment.Comment]
+  clickUser: [u: uni.user.User]
 }>()
 defineSlots<{
   default(): void
@@ -29,19 +29,16 @@ const isParentSender = computed(() => $props.comment.sender.name == $props.paren
     class="van-hairline--bottom relative bg-(--van-background-2) text-(--van-text-color) pb-1">
     <VanCol span="4" class="!flex justify-center items-start">
       <div>
-        <Comp.Image :fallback="userIcon" :src="comment.sender.avatar ? uni.image.Image.create({
-          $$plugin: pluginName,
-          forkNamespace: 'default',
-          path: `/media/users/${comment.sender.id}.jpg`
-        }) : userIcon" class="mt-2 size-10" round fit="cover" />
+        <Comp.Image :fallback="userIcon" :src="comment.sender.avatar ?? userIcon" :retry-max="1" class="mt-2 size-10"
+          round fit="cover" @click="$emit('clickUser', comment.sender)" />
       </div>
     </VanCol>
     <VanCol class="!flex flex-col ml-1 relative" span="19">
-      <div class="mt-2 mb-2 flex flex-col">
+      <div class="mt-2 mb-2 flex flex-col" @click.stop="$emit('clickUser', comment.sender)">
         <div class="text-sm text-(--van-text-color)">
           <div class=" text-sm "
             :class="[(isParentSender) ? 'text-(--nui-primary-color) font-bold' : 'text-(--van-text-color)']">
-            {{ comment.sender.name ?? '' }}
+            {{ comment.sender.customUser.user.nickname || comment.sender.name }}
             <span class="mr-1 text-[11px] text-(--nui-primary-color) font-normal">
               Lv{{ raw.expInfo.level }}
             </span>
@@ -57,7 +54,7 @@ const isParentSender = computed(() => $props.comment.sender.name == $props.paren
         <div class="h-auto text-wrap text-(--van-text-color-2)">评论被举报</div>
       </template>
       <div v-else v-html="comment.content.text">
-        
+
       </div>
 
       <div class="-ml-0.5 mt-2 mb-1 flex gap-3">

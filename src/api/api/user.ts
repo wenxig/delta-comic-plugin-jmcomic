@@ -15,7 +15,7 @@ export namespace _jmApiUser {
     })
   })
   export const createFavouriteStream = () => jmStream(async (page, signal) => {
-    const { list } = await jmStore.api.value!.get<{
+    const { list, total } = await jmStore.api.value!.get<{
       list: JmType.comic.RawCommonComic[],
       folder_list: {
         FID: string
@@ -25,7 +25,7 @@ export namespace _jmApiUser {
       total: string
       count: number
     }>('/favorite', { params: { page, folder_id: 0, o: 'mr' }, signal })
-    return list.map(createCommonToUniItem)
+    return { list: list.map(createCommonToUniItem), total: Number(total) }
   })
 
   export const dailyCheck = PromiseContent.fromAsyncFunction(async () => {

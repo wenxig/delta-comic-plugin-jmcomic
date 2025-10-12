@@ -23,9 +23,10 @@ export namespace _jmComment {
     content: string
     photo: string
     spoiler: string
+    replys?: RawComment[]
   }
   export class Comment extends uni.comment.Comment {
-    override sender: uni.user.User
+    override sender: _jmUser.CommentUser
     override like(signal?: AbortSignal): PromiseLike<boolean> {
       window.$message.error("Method not implemented.")
       return Promise.resolve(false)
@@ -42,12 +43,11 @@ export namespace _jmComment {
       return jm.api.comment.sendChildComment(raw.AID, raw.parent_CID, text, false, signal)
     }
     override children
-    constructor(v: RawComment, others: RawComment[]) {
+    constructor(v: RawComment) {
       const sender = new _jmUser.CommentUser(v)
-      const children = others.filter(c => c.parent_CID == c.CID)
       super({
         $$plugin: pluginName,
-        childrenCount: children.length,
+        childrenCount: v.replys?.length ?? 0,
         content: {
           text: DOMPurify.sanitize(v.content),
           type: 'html'
@@ -65,7 +65,7 @@ export namespace _jmComment {
       })
       this.sender = sender
       this.children = Utils.data.Stream.create<Comment>(function* () {
-        yield children.map(v => new Comment(v, others))
+        yield v.replys?.map(v => new Comment(v)) ?? []
       })
     }
   }
