@@ -16,7 +16,7 @@ export namespace jm {
   export type LevelSort = 'mv_m' | 'mv_w' | 'mv_t'
 
   export import auth = _jmAuth
-  export  import comic = _jmComic
+  export import comic = _jmComic
   export import search = _jmSearch
   export import user = _jmUser
   export import image = _jmImage
@@ -31,3 +31,5 @@ export namespace jm.api {
   export import user = _jmApiUser
 
 }
+
+window.$api.jm = jm

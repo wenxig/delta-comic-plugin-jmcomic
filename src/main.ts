@@ -195,13 +195,18 @@ definePlugin({
     }, {
       name: '预加载数据',
       async call(setDescription) {
-        setDescription('获取分类 & 推荐')
+        setDescription('获取分类 & 推荐等...')
         try {
-          const [cate, promote, wb] = await Promise.all([
+          const [cate, promote, wb, useredit] = await Promise.all([
             jm.api.search.getCategories(),
             jm.api.search.getPromote(),
             jm.api.search.getWeekBestList(),
+            jm.api.user.getUser(jmStore.user.value?.id!)
           ])
+
+          console.log('useredit', useredit)
+          jmStore.useredit.value = useredit
+
           console.log('cate', cate)
           uni.content.ContentPage.setCategories(pluginName, ...cate.categories.filter(v => !!v.sub_categories).flatMap(v => v.sub_categories!.map(c => ({
             title: c.name,

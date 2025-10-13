@@ -131,6 +131,33 @@ export namespace _jmUser {
       }
     }
   }
+
+  export interface UserEdit {
+    aboutMe: string
+    birthPlace: string
+    birthday: string
+    city: string
+    collections: string
+    company: string
+    country: string
+    erogenic: string
+    favorite: string
+    firstName: string
+    gender: string
+    hate: string
+    ideal: string
+    infoHere: string
+    lastName: string
+    nickName: string
+    occupation: string
+    password: string
+    password_confirm: string
+    relations: string
+    school: string
+    sexuality: string
+    status: string
+    website: string
+  }
 }
 
 

@@ -5,6 +5,10 @@ import { uni, Utils } from "delta-comic-core"
 import { pluginName } from "@/symbol"
 import { isEmpty } from "lodash-es"
 import { jm } from "."
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+dayjs.extend(customParseFormat)
+
 export namespace _jmComment {
   export interface RawComment {
     AID: string
@@ -26,9 +30,10 @@ export namespace _jmComment {
     replys?: RawComment[]
   }
   export class Comment extends uni.comment.Comment {
+    override $$meta: { raw: RawComment }
     override sender: _jmUser.CommentUser
-    override like(signal?: AbortSignal): PromiseLike<boolean> {
-      window.$message.error("Method not implemented.")
+    override async like(signal?: AbortSignal): Promise<boolean> {
+      await jm.api.comment.likeComment(this.$$meta.raw.name.match(/\d+/g)?.[0] ?? '', this.id, signal)
       return Promise.resolve(false)
     }
     override report(signal?: AbortSignal): PromiseLike<any> {
@@ -58,11 +63,22 @@ export namespace _jmComment {
         likeCount: Number(v.likes),
         reported: false,
         sender,
-        time: Number(v.addtime),
-        $$meta: {
-          raw: v
-        }
+        time: (() => {
+          const date = dayjs(v.addtime, 'MMM D, YYYY')
+          console.log(v.addtime, date, v.update_at)
+          if (v.update_at != '0') {
+            const time = dayjs(Number(v.update_at))
+            date.set('hour', time.hour())
+            date.set('minute', time.minute())
+            date.set('second', time.second())
+            date.set('millisecond', time.millisecond())
+          }
+          return date.toDate().getTime()
+        })()
       })
+      this.$$meta = {
+        raw: v
+      }
       this.sender = sender
       this.children = Utils.data.Stream.create<Comment>(function* () {
         yield v.replys?.map(v => new Comment(v)) ?? []
