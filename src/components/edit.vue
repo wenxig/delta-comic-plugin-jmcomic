@@ -1,7 +1,5 @@
 <script setup lang='ts'>
 import { jmStore } from '@/store'
-import { NDatePicker, NForm, NFormItem, NInput, NRadio, NRadioGroup } from 'naive-ui'
-import { computed } from 'vue'
 </script>
 
 <template>
@@ -10,14 +8,14 @@ import { computed } from 'vue'
       个人信息
     </NDivider>
     <NFormItem label="昵称" path="nickName">
-      <NInput v-model:value="jmStore.useredit.value.nickName" />
+      <NInput clearable v-model:value="jmStore.useredit.value.nickName" />
     </NFormItem>
     <div class="flex gap-3 w-full">
       <NFormItem label="姓" path="firstName">
-        <NInput v-model:value="jmStore.useredit.value.firstName" />
+        <NInput clearable v-model:value="jmStore.useredit.value.firstName" />
       </NFormItem>
       <NFormItem label="名" path="lastName">
-        <NInput v-model:value="jmStore.useredit.value.lastName" />
+        <NInput clearable v-model:value="jmStore.useredit.value.lastName" />
       </NFormItem>
     </div>
     <NFormItem label="生日" path="nickName">
@@ -41,7 +39,19 @@ import { computed } from 'vue'
       </NRadioGroup>
     </NFormItem>
     <NFormItem label="个人主页" path="website">
-      <NInput v-model:value="jmStore.useredit.value.website" />
+      <NInput clearable v-model:value="jmStore.useredit.value.website" />
+    </NFormItem>
+    <NFormItem label="出生地" path="birthPlace">
+      <NInput clearable v-model:value="jmStore.useredit.value.birthPlace" />
+    </NFormItem>
+    <NFormItem label="居住地" path="city">
+      <NInput clearable v-model:value="jmStore.useredit.value.city" />
+    </NFormItem>
+    <NFormItem label="学校" path="school">
+      <NInput clearable v-model:value="jmStore.useredit.value.school" />
+    </NFormItem>
+    <NFormItem label="个人简介" path="aboutMe">
+      <NInput clearable v-model:value="jmStore.useredit.value.aboutMe" type="textarea" />
     </NFormItem>
   </NForm>
 </template>

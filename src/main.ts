@@ -249,5 +249,31 @@ definePlugin({
         }
       }
     }
-  ]
+  ],
+  search: {
+    methods: {
+      keyword: {
+        name: '关键词',
+        getStream(input, sort) {
+          return jm.api.search.utils.createKeywordStream(input, <jm.SortType>sort)
+        },
+        sorts: jm.sortMap,
+        defaultSort: '',
+        async getAutoComplete(input, signal) {
+          return []
+        },
+      },
+      category: {
+        name: '分类',
+        getStream(input, sort) {
+          return jm.api.search.utils.createCategoryStream(input, <jm.SortType>sort)
+        },
+        sorts: jm.sortMap,
+        defaultSort: '',
+        async getAutoComplete(input, signal) {
+          return []
+        },
+      }
+    }
+  }
 })
