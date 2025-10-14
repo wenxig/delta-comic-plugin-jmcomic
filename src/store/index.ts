@@ -1,7 +1,7 @@
 import type { jm } from "@/api"
 import type { Utils } from "delta-comic-core"
 import { useLocalStorage } from '@vueuse/core'
-import { shallowRef } from "vue"
+import { ref, shallowRef } from "vue"
 export namespace jmStore {
   export const api = shallowRef<Utils.request.Requester>()
   export const loginToken = shallowRef<string | undefined>()
@@ -11,7 +11,7 @@ export namespace jmStore {
     password: ''
   })
   export const user = shallowRef<jm.user.UserMe>()
-  export const useredit = shallowRef<jm.user.UserEdit>()
+  export const useredit = ref<jm.user.UserEdit>()
 
   export const promotes = shallowRef<jm.search.Promote[]>()
   export const wb = shallowRef<jm.search.WeekBestList>()

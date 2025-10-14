@@ -11,6 +11,7 @@ import { JmComicPage } from "./api/page"
 import Card from "./components/card.vue"
 import CommentRow from "./components/commentRow.vue"
 import User from "./components/user.vue"
+import Edit from "./components/edit.vue"
 import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
 const testAxios = axios.create({
@@ -177,7 +178,7 @@ definePlugin({
   },
   user: {
     card: User,
-    edit: User,
+    edit: Edit,
   },
   otherProgress: [
     {
