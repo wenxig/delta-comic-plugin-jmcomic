@@ -1,16 +1,34 @@
 <script setup lang='ts'>
+import { jm } from '@/api'
 import { jmStore } from '@/store'
+import { Utils } from 'delta-comic-core'
+import { shallowRef } from 'vue'
+
+const isSubmitting = shallowRef(false)
+const submit = async () => {
+  if (isSubmitting.value) return
+  isSubmitting.value = true
+  const loading = Utils.message.createLoadingMessage('上传中')
+  if (!jmStore.useredit.value) return loading.fail('无信息')
+  jmStore.useredit.value.password = jmStore.useredit.value.password_confirm = jmStore.loginData.value.password
+  await loading.bind(jm.api.user.setUser(jmStore.user.value?.id ?? 0, jmStore.useredit.value))
+  isSubmitting.value = false
+}
 </script>
 
 <template>
-  <NForm :model="jmStore.useredit.value" label-placement="top" v-if="jmStore.useredit.value">
+  <NForm :model="jmStore.useredit.value" label-placement="top" class="!bg-(--van-background-2) !p-3"
+    v-if="jmStore.useredit.value" @submit="submit" :disabled="isSubmitting">
     <NDivider title-placement="left">
       个人信息
     </NDivider>
     <NFormItem label="昵称" path="nickName">
       <NInput clearable v-model:value="jmStore.useredit.value.nickName" />
     </NFormItem>
-    <div class="flex gap-3 w-full">
+    <NFormItem label="邮件" path="email">
+      <NInput clearable v-model:value="jmStore.useredit.value.email" />
+    </NFormItem>
+    <div class="flex gap-1 w-full">
       <NFormItem label="姓" path="firstName">
         <NInput clearable v-model:value="jmStore.useredit.value.firstName" />
       </NFormItem>
@@ -18,6 +36,9 @@ import { jmStore } from '@/store'
         <NInput clearable v-model:value="jmStore.useredit.value.lastName" />
       </NFormItem>
     </div>
+    <NDivider title-placement="left">
+      辅助信息
+    </NDivider>
     <NFormItem label="生日" path="nickName">
       <NDatePicker type="date" value-format="yyyy-MM-DD" clearable
         v-model:formatted-value="jmStore.useredit.value.birthday" />
@@ -44,14 +65,41 @@ import { jmStore } from '@/store'
     <NFormItem label="出生地" path="birthPlace">
       <NInput clearable v-model:value="jmStore.useredit.value.birthPlace" />
     </NFormItem>
-    <NFormItem label="居住地" path="city">
+    <NFormItem label="居住城市" path="city">
       <NInput clearable v-model:value="jmStore.useredit.value.city" />
+    </NFormItem>
+    <NFormItem label="居住国家" path="country">
+      <NInput clearable v-model:value="jmStore.useredit.value.country" />
     </NFormItem>
     <NFormItem label="学校" path="school">
       <NInput clearable v-model:value="jmStore.useredit.value.school" />
     </NFormItem>
-    <NFormItem label="个人简介" path="aboutMe">
-      <NInput clearable v-model:value="jmStore.useredit.value.aboutMe" type="textarea" />
+    <NFormItem label="职业" path="occupation">
+      <NInput clearable v-model:value="jmStore.useredit.value.occupation" />
     </NFormItem>
+    <NFormItem label="关于我" path="aboutMe">
+      <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.aboutMe" />
+    </NFormItem>
+    <NDivider title-placement="left">
+      偏好信息
+    </NDivider>
+    <NFormItem label="收藏性类别" path="collections">
+      <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.collections" />
+    </NFormItem>
+    <NFormItem label="最喜欢的理想性伴侣" path="ideal">
+      <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.ideal" />
+    </NFormItem>
+    <NFormItem label="我的敏感/好球区" path="erogenic">
+      <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.erogenic" />
+    </NFormItem>
+    <NFormItem label="最喜欢" path="favorite">
+      <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.favorite" />
+    </NFormItem>
+    <NFormItem label="最讨厌" path="hate">
+      <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.hate" />
+    </NFormItem>
+    <div class="mt-2">
+      <NButton type="primary" attr-type="submit" :loading="isSubmitting" :disabled="isSubmitting">提交信息更新</NButton>
+    </div>
   </NForm>
 </template>

@@ -141,6 +141,7 @@ export namespace _jmUser {
     company: string
     country: string
     erogenic: string
+    email: string
     favorite: string
     firstName: string
     gender: string

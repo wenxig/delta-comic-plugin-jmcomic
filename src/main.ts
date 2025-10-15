@@ -21,6 +21,7 @@ const testAxios = axios.create({
     return inRange(status, 199, 499)
   },
 })
+testAxios.interceptors.request.use(Utils.request.utilInterceptors.devProxy)
 testAxios.interceptors.response.use(undefined, Utils.request.utilInterceptors.createAutoRetry(testAxios, 2))
 definePlugin({
   name: pluginName,
@@ -259,7 +260,7 @@ definePlugin({
         },
         sorts: jm.sortMap,
         defaultSort: '',
-        async getAutoComplete(input, signal) {
+        async getAutoComplete(_input, _signal) {
           return []
         },
       },
@@ -270,7 +271,7 @@ definePlugin({
         },
         sorts: jm.sortMap,
         defaultSort: '',
-        async getAutoComplete(input, signal) {
+        async getAutoComplete(_input, _signal) {
           return []
         },
       }
