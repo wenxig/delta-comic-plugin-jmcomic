@@ -1,14 +1,23 @@
-import { jm, type jm as JmType } from '..'
+import { type jm as JmType } from '..'
 import { random } from "lodash-es"
 import { Utils } from "delta-comic-core"
 import { jmStore } from '@/store'
 import { createCommonToUniItem, jmStream } from './utils'
 import { _jmSearch } from '../search'
+const decodeURI = (url: string) => {
+  let last = url
+  do {
+    url = window.decodeURI(url)
+    if (last == url) break
+    last = url
+  } while (url.includes('%'))
+  return url
+}
 
 export namespace _jmApiSearch.utils {
   const { PromiseContent } = Utils.data
   export const byKeyword = PromiseContent.fromAsyncFunction((searchQuery: string, order: JmType.SortType = "", page = 1, signal?: AbortSignal) =>
-    jmStore.api.value!.get<JmType.search.ByKeyword>('/search', { signal, params: { search_query: (searchQuery), page, o: order } })
+    jmStore.api.value!.get<JmType.search.ByKeyword>('/search', { signal, params: { search_query: encodeURIComponent(decodeURI(searchQuery)), page, o: order } })
       .then<{
         list: JmType.comic.JmItem[]
         total: number

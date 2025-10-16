@@ -29,6 +29,8 @@ export namespace _jmApiUser {
     return { list: list.map(createCommonToUniItem), total: Number(total) }
   })
 
+  export const favouriteComic = PromiseContent.fromAsyncFunction((id: string, signal?: AbortSignal) => jmStore.api.value!.postForm('/favorite', { aid: id }, { signal }))
+
   export const dailyCheck = PromiseContent.fromAsyncFunction(async (signal?: AbortSignal) => {
     const user = jmStore.user.value
     const dailyInfo = await jmStore.api.value!.get<{

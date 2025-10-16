@@ -21,7 +21,6 @@ const testAxios = axios.create({
     return inRange(status, 199, 499)
   },
 })
-testAxios.interceptors.request.use(Utils.request.utilInterceptors.devProxy)
 testAxios.interceptors.response.use(undefined, Utils.request.utilInterceptors.createAutoRetry(testAxios, 2))
 definePlugin({
   name: pluginName,
@@ -56,8 +55,8 @@ definePlugin({
           if (authorization) requestConfig.headers.set('Authorization', `Bearer ${authorization}`)
           const baseHeader = {
             Version: "v1.2.9",
-            Cookie: `AVS=${jmStore.loginAvs.value || ''}`,
           }
+          document.cookie += `;AVS=${jmStore.loginAvs.value}`
           for (const key in baseHeader) {
             if (Object.prototype.hasOwnProperty.call(baseHeader, key)) {
               const element = baseHeader[<keyof typeof baseHeader>key]
@@ -84,11 +83,12 @@ definePlugin({
                 continue
               }
             }
+            console.error('[Decryption failed]', res.data, cipherText)
             throw new Error("Decryption failed")
           }
           if (!res.data.data) return res
           if (isString(res.data.data)) res.data = decrypt(res.data.data)
-          else res.data.data = res.data
+          console.log('response', res.config.url, '->', res.data)
           return res
         })
         return ins
@@ -180,6 +180,14 @@ definePlugin({
   user: {
     card: User,
     edit: Edit,
+    syncFavourite: {
+      download() {
+        return jm.api.user.createFavouriteStream().nextToDone()
+      },
+      upload(items) {
+        return Promise.all(items.map(item => jm.api.user.favouriteComic(item.id)))
+      },
+    }
   },
   otherProgress: [
     {
