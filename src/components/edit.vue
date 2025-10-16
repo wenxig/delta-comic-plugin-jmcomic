@@ -18,7 +18,7 @@ const submit = async () => {
 
 <template>
   <NForm :model="jmStore.useredit.value" label-placement="top" class="!bg-(--van-background-2) !p-3"
-    v-if="jmStore.useredit.value" @submit="submit" :disabled="isSubmitting">
+    v-if="jmStore.useredit.value" @submit.stop.prevent :disabled="isSubmitting">
     <NDivider title-placement="left">
       个人信息
     </NDivider>
@@ -86,6 +86,9 @@ const submit = async () => {
     <NFormItem label="收藏性类别" path="collections">
       <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.collections" />
     </NFormItem>
+    <NFormItem label="我是这里的" path="infoHere">
+      <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.infoHere" />
+    </NFormItem>
     <NFormItem label="最喜欢的理想性伴侣" path="ideal">
       <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.ideal" />
     </NFormItem>
@@ -99,7 +102,7 @@ const submit = async () => {
       <NInput type="textarea" clearable :maxlength="200" v-model:value="jmStore.useredit.value.hate" />
     </NFormItem>
     <div class="mt-2">
-      <NButton type="primary" attr-type="submit" :loading="isSubmitting" :disabled="isSubmitting">提交信息更新</NButton>
+      <NButton type="primary" @click="submit" :loading="isSubmitting" :disabled="isSubmitting">提交信息更新</NButton>
     </div>
   </NForm>
 </template>
