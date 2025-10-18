@@ -1,8 +1,9 @@
 import { uni, Utils } from 'delta-comic-core'
 import type { jm as JmType } from '..'
 import { jmStore } from '@/store'
-import { createFullToUniItem } from './utils'
+import { createFullToUniItem, jmStream } from './utils'
 import { pluginName } from '@/symbol'
+import { _jmComment } from '../comment'
 export namespace _jmApiComic {
   const { PromiseContent } = Utils.data
   export const getComic = PromiseContent.fromAsyncFunction(async (id: string, signal?: AbortSignal) => createFullToUniItem(await jmStore.api.value!.get<JmType.comic.RawFullComic>(`/album?id=${id}`, { signal })))
@@ -39,4 +40,21 @@ export namespace _jmApiComic {
     msg: string,
     type: 'add' | 'remove'
   }>('/favorite', { aid }, { signal }))
+
+  export const getComment = PromiseContent.fromAsyncFunction(async (Id: string, page: number = 1, signal?: AbortSignal) => {
+    const all = (await jmStore.api.value!.get<{ list: JmType.comment.RawComment[], total: string }>('/forum', {
+      params: {
+        mode: 'manhua',
+        page,
+        aid: Id
+      },
+      signal
+    }))
+    return { list: all.list.map(v => new _jmComment.Comment(v)), total: Number(all.total) }
+  })
+  export const createCommentsStream = (blogId: string) => jmStream((page, signal) => getComment(blogId, page, signal))
+
+
+  export const sendComment = PromiseContent.fromAsyncFunction((id: string, content: string, isSpoiler: boolean, signal?: AbortSignal) => jmStore.api.value!.postForm('/comment', { aid: id, content, comment: content, isSpoiler }, { signal }))
+  export const sendChildComment = PromiseContent.fromAsyncFunction((id: string, parentCId: string, content: string, isSpoiler: boolean, signal?: AbortSignal) => jmStore.api.value!.postForm('/comment', { aid: id, content, comment: content, isSpoiler, comment_id: parentCId }, { signal }))
 }

@@ -11,7 +11,7 @@ export const apiGetter = [
   "https://rup4a04-c02.tos-cn-hongkong.bytepluses.com/newsvr-2025.txt"
 ]
 export const api = [
-  "https://cdn-msp12.jmdanjonproxy.xyz/",
+  // "https://cdn-msp12.jmdanjonproxy.xyz/",
   "https://www.cdnuc.vip",
   "https://www.cdnplaystation6.org",
   "https://www.cdnuc.org",

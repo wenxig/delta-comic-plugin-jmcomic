@@ -1,8 +1,7 @@
 import { pluginName } from "@/symbol"
 import { uni, Utils } from "delta-comic-core"
 import { jm } from "."
-import { createRecommendToUniItem } from "./api/utils"
-import View from "@/components/view.vue"
+import { createCommonBlogToUniItem, createFullBlogToUniItem, createRecommendToUniItem } from "./api/utils"
 
 export class JmComicPage extends uni.content.ContentPage {
   public static contentType = uni.content.ContentPage.toContentTypeString({
@@ -32,7 +31,7 @@ export class JmComicPage extends uni.content.ContentPage {
       this.images.content.isLoading.value || this.images.content.loadPromise(jm.api.comic.getComicPages(this.id)),
     ])
   }
-  public override comments = jm.api.comment.createCommentsStream(this.id)
+  public override comments = jm.api.comic.createCommentsStream(this.id)
   public override reloadAll(): any {
     throw new Error("Method not implemented.")
   }
@@ -42,8 +41,53 @@ export class JmComicPage extends uni.content.ContentPage {
   public override exportOffline(_save: any): Promise<void> {
     throw new Error("Method not implemented.")
   }
-  public override ViewComp = View
+  public ViewComp
   constructor(preload: uni.content.PreloadValue, id: string, ep: string) {
     super(preload, id, ep)
+    this.ViewComp = window.$view.images
+  }
+}
+
+
+export class JmBlogPage extends uni.content.ContentPage {
+  public static contentType = uni.content.ContentPage.toContentTypeString({
+    name: 'blog',
+    plugin: pluginName
+  })
+  public override plugin = pluginName
+  public override contentType = uni.content.ContentPage.toContentType(JmBlogPage.contentType)
+  public content = Utils.data.PromiseContent.withResolvers<string>()
+  public override loadAll() {
+    return Promise.all([
+      this.detail.content.isLoading.value || this.detail.content.loadPromise(jm.api.blog.getInfo(this.ep).then(v => {
+        const blog = createFullBlogToUniItem(v.info)
+        this.eps.resolve([])
+        this.recommends.resolve(v.related_blogs?.map(v => createCommonBlogToUniItem(v)) ?? [])
+        this.recommendComics.resolve(v.related_comics?.map(v => createRecommendToUniItem(v)) ?? [])
+        this.pid.resolve(blog.id)
+        this.detail.resolve(blog)
+        this.images.resolve([blog.$cover])
+        this.uploader.resolve(new jm.user.BlogUser(blog.$$meta.raw))
+        return blog
+      }))
+    ])
+  }
+  public uploader = Utils.data.PromiseContent.withResolvers<uni.user.User>()
+  public recommendComics = Utils.data.PromiseContent.withResolvers<uni.item.Item[]>()
+  public images = Utils.data.PromiseContent.withResolvers<uni.image.Image[]>()
+  public override comments = jm.api.blog.createCommentsStream(this.id)
+  public override reloadAll(): any {
+    throw new Error("Method not implemented.")
+  }
+  public override loadAllOffline(): Promise<any> {
+    throw new Error("Method not implemented.")
+  }
+  public override exportOffline(_save: any): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+  public ViewComp
+  constructor(preload: uni.content.PreloadValue, id: string, ep: string) {
+    super(preload, id, ep)
+    this.ViewComp = window.$view.images
   }
 }

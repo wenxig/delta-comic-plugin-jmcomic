@@ -43,7 +43,7 @@ export namespace _jmComment {
     override sendComment(text: string, signal?: AbortSignal): PromiseLike<any> {
       const raw: RawComment = this.$$meta!.raw
       if (isEmpty(raw.parent_CID)) {
-        return jm.api.comment.sendComment(raw.AID, text, false, signal)
+        return jm.api.comment.sendComicComment(raw.AID, text, false, signal)
       }
       return jm.api.comment.sendChildComment(raw.AID, raw.parent_CID, text, false, signal)
     }

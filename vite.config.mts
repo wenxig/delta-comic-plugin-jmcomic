@@ -37,11 +37,9 @@ export default defineConfig({
           vue: 'window.$$lib$$.Vue',
           vant: 'window.$$lib$$.Vant',
           'naive-ui': 'window.$$lib$$.Naive',
-          "motion-v": 'window.$$lib$$.Motion',
           axios: 'window.$$lib$$.Axios',
           'lodash-es': 'window.$$lib$$.Lodash',
           'delta-comic-core': 'window.$$lib$$.Dcc',
-          'pinia': 'window.$$lib$$.Pinia',
           'vue-router': 'window.$$lib$$.VR',
           'crypto-js': 'window.$$lib$$.Crypto'
         }

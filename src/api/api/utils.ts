@@ -1,8 +1,9 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
 import { ceil, isEmpty, uniq } from "lodash-es"
-import { JmComicPage } from "../page"
+import { JmBlogPage, JmComicPage } from "../page"
 import { Utils } from "delta-comic-core"
+import dayjs from "dayjs"
 
 export const spiltUsers = (userString = '') => userString.split(/\,|，|\&|\||、|＆|(\sand\s)|(\s和\s)|(\s[xX]\s)/ig).filter(Boolean).map(v => v.trim()).filter(Boolean)
 
@@ -12,7 +13,14 @@ export const createLessToUniItem = (comic: jm.comic.RawLessComic) => new jm.comi
   },
   $$plugin: pluginName,
   author: [],
-  categories: comic.tags.split(' ').filter(v => !isEmpty(v)),
+  categories: comic.tags.split(' ').filter(v => !isEmpty(v)).map(v => ({
+    name: v,
+    search: {
+      keyword: v,
+      sort: '',
+      source: 'keyword'
+    }
+  })),
   cover: {
     $$plugin: pluginName,
     forkNamespace: 'default',
@@ -40,7 +48,14 @@ export const createCommonToUniItem = (comic: jm.comic.RawCommonComic) => new jm.
   },
   $$plugin: pluginName,
   author: spiltUsers(comic.author),
-  categories: uniq([comic.category.title ?? '', comic.category_sub.title ?? '']),
+  categories: uniq([comic.category.title ?? '', comic.category_sub.title ?? '']).filter(v => !isEmpty(v)).map(v => ({
+    name: v,
+    search: {
+      keyword: v,
+      sort: '',
+      source: 'keyword'
+    }
+  })),
   cover: {
     $$plugin: pluginName,
     forkNamespace: 'default',
@@ -94,7 +109,29 @@ export const createFullToUniItem = (comic: jm.comic.RawFullComic) => new jm.comi
   },
   $$plugin: pluginName,
   author: comic.author,
-  categories: comic.tags.concat(comic.works.map(v => `作品:${v}`), comic.actors.map(v => `角色:${v}`)),
+  categories: comic.tags.filter(v => !isEmpty(v)).map(v => ({
+    name: v,
+    search: {
+      keyword: v,
+      sort: '',
+      source: 'keyword'
+    }
+  }))
+    .concat(comic.works.map(v => ({
+      name: `作品:${v}`,
+      search: {
+        keyword: v,
+        sort: '',
+        source: 'keyword'
+      }
+    })), comic.actors.map(v => ({
+      name: `角色:${v}`,
+      search: {
+        keyword: v,
+        sort: '',
+        source: 'keyword'
+      }
+    }))),
   cover: {
     $$plugin: pluginName,
     forkNamespace: 'default',
@@ -118,6 +155,79 @@ export const createFullToUniItem = (comic: jm.comic.RawFullComic) => new jm.comi
   likeNumber: Number(comic.likes),
   updateTime: Number(comic.addtime),
   viewNumber: Number(comic.total_views)
+})
+
+export const createCommonBlogToUniItem = (blog: jm.blog.RawCommonBlog, searchSource: string = 'keyword') => new jm.blog.JmBlog({
+  $$plugin: pluginName,
+  $$meta: {
+    raw: blog
+  },
+  author: [blog.username],
+  commentSendable: true,
+  categories: blog.tags.map(v => ({
+    name: v,
+    search: {
+      keyword: v,
+      sort: '',
+      source: searchSource
+    }
+  })),
+  contentType: JmBlogPage.contentType,
+  cover: {
+    $$plugin: pluginName,
+    forkNamespace: 'default',
+    path: blog.photo
+  },
+  epLength: '1',
+  id: blog.id,
+  length: blog.content.length.toString(),
+  thisEp: {
+    $$plugin: pluginName,
+    index: blog.id,
+    name: blog.title
+  },
+  title: blog.title,
+  commentNumber: Number(blog.total_comments),
+  likeNumber: Number(blog.total_likes),
+  viewNumber: Number(blog.total_views),
+  updateTime: dayjs(blog.date, 'YYYY-MM-DD').toDate().getTime(),
+})
+
+export const createFullBlogToUniItem = (blog: jm.blog.RawFullBlog, searchSource: string = 'keyword') => new jm.blog.JmBlog({
+  $$plugin: pluginName,
+  $$meta: {
+    raw: blog
+  },
+  author: [blog.username],
+  commentSendable: true,
+  categories: blog.tags.map(v => ({
+    name: v,
+    search: {
+      keyword: v,
+      sort: '',
+      source: searchSource
+    }
+  })),
+  contentType: JmBlogPage.contentType,
+  cover: {
+    $$plugin: pluginName,
+    forkNamespace: 'default',
+    path: blog.photo
+  },
+  epLength: '1',
+  id: blog.id,
+  length: blog.content.length.toString(),
+  thisEp: {
+    $$plugin: pluginName,
+    index: blog.id,
+    name: blog.title
+  },
+  title: blog.title,
+  commentNumber: Number(blog.total_comments),
+  likeNumber: Number(blog.total_likes),
+  viewNumber: Number(blog.total_views),
+  updateTime: dayjs(blog.date, 'YYYY-MM-DD').toDate().getTime(),
+  isLiked: blog.is_liked
 })
 
 export const jmStream = <T>(api: (page: number, signal: AbortSignal) => PromiseLike<{ list: T[], total: number }>) => Utils.data.Stream.create<T>(async function* (signal, that) {

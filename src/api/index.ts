@@ -2,6 +2,7 @@ import { _jmAuth } from "./auth"
 import { _jmUser } from "./user"
 import { _jmImage } from "./image"
 import { _jmSearch } from "./search"
+import { _jmBlog } from "./blog"
 import { _jmComic } from "./comic"
 import { _jmComment } from "./comment"
 import { _jmApiAuth } from "./api/auth"
@@ -18,6 +19,7 @@ export namespace jm {
   export const sortMap = [{ text: '相关性最高', value: '' }, { text: '点赞数最多', value: 'tf' }, { text: '图片数最多', value: 'mp' },
   { text: '观看数最多', value: 'mv' }, { text: '本月观看数最多', value: 'mv_m' }, { text: '本周观看数最多', value: 'mv_w' }, { text: '今日观看数最多', value: 'mv_t' }]
   export import auth = _jmAuth
+  export import blog = _jmBlog
   export import comic = _jmComic
   export import search = _jmSearch
   export import user = _jmUser

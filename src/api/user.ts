@@ -2,6 +2,7 @@ import { uni } from "delta-comic-core"
 import type { _jmComment } from "./comment"
 import { _jmImage } from "./image"
 import { pluginName } from "@/symbol"
+import type { _jmBlog } from "./blog"
 
 export namespace _jmUser {
   export type Gender = "Male" | "Female"
@@ -128,6 +129,29 @@ export namespace _jmUser {
       this.customUser = {
         user: c,
         expInfo: new ExpInfo(c.expinfo)
+      }
+    }
+  }
+
+  export class BlogUser extends uni.user.User {
+    public static is(v: unknown): v is BlogUser {
+      return v instanceof BlogUser
+    }
+    override customUser
+    constructor(c: _jmBlog.RawFullBlog | _jmBlog.RawCommonBlog) {
+      super({
+        id: c.uid,
+        name: c.username,
+        avatar: c.photo.includes('nopic') ? undefined : {
+          $$plugin: pluginName,
+          forkNamespace: 'default',
+          path: `/media/users/${c.user_photo}`
+        },
+        $$plugin: pluginName
+      })
+      this.customUser = {
+        user: c,
+        expInfo: 'expInfo' in c ? new ExpInfo(c.expInfo) : undefined
       }
     }
   }

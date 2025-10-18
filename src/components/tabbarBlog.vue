@@ -4,13 +4,15 @@ import { jmStore } from '@/store'
 import { useResizeObserver, until } from '@vueuse/core'
 import { Comp, PluginConfigSearchTabbar, Store, uni, Utils } from 'delta-comic-core'
 import { isEmpty } from 'lodash-es'
-import { computed, onMounted, ref, shallowRef } from 'vue'
+import { shallowRef, ref, onMounted, computed } from 'vue'
 import { ComponentExposed } from 'vue-component-type-helpers'
 import { useRouter } from 'vue-router'
+
 const $props = defineProps<{
   isActive: boolean
   tabbar: PluginConfigSearchTabbar
 }>()
+
 const $router = useRouter()
 
 const list = shallowRef<ComponentExposed<typeof Comp.Waterfall>>()
@@ -31,7 +33,7 @@ const stop = $router.beforeEach(() => {
 })
 const dataSource = computed(() => {
   if (!orderStoreSaveTemp.has($props.tabbar.id))
-    orderStoreSaveTemp.set($props.tabbar.id, jm.api.search.createPromoteStream(Number($props.tabbar.id))
+    orderStoreSaveTemp.set($props.tabbar.id, jm.api.blog.createBlogsStream(<jm.api.blog.BlogType>$props.tabbar.id)
       .setupData(jmStore.promotes.value?.find(v => v.id == $props.tabbar.id)?.$content ?? []))
   return orderStoreSaveTemp.get($props.tabbar.id)!
 })

@@ -3,17 +3,19 @@ import { definePlugin, uni, Utils } from "delta-comic-core"
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
 import { api, image } from "./api/forks"
-import { inRange, isString } from 'lodash-es'
+import { entries, fromPairs, inRange, isString } from 'lodash-es'
 import axios from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
-import { JmComicPage } from "./api/page"
+import { JmBlogPage, JmComicPage } from "./api/page"
 import Card from "./components/card.vue"
 import CommentRow from "./components/commentRow.vue"
 import User from "./components/user.vue"
 import Edit from "./components/edit.vue"
 import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
+import BlogLayout from "./components/blogLayout.vue"
+import TabbarBlog from "./components/tabbarBlog.vue"
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -27,7 +29,7 @@ definePlugin({
   api: {
     api: {
       forks: () => Promise.resolve(api),
-      test: (fork, signal) => testAxios.get(fork, { signal })
+      test: (fork, signal) => testAxios.get(`${fork}/promote_list`, { signal })
     }
   },
   image: {
@@ -165,16 +167,20 @@ definePlugin({
   },
   content: {
     contentPage: {
-      [JmComicPage.contentType]: JmComicPage
+      [JmComicPage.contentType]: JmComicPage,
+      [JmBlogPage.contentType]: JmBlogPage
     },
     layout: {
-      [JmComicPage.contentType]: window.$layout.default
+      [JmComicPage.contentType]: window.$layout.default,
+      [JmBlogPage.contentType]: BlogLayout
     },
     itemCard: {
-      [JmComicPage.contentType]: Card
+      [JmComicPage.contentType]: Card,
+      [JmBlogPage.contentType]: Card
     },
     commentRow: {
-      [JmComicPage.contentType]: CommentRow
+      [JmComicPage.contentType]: CommentRow,
+      [JmBlogPage.contentType]: CommentRow
     }
   },
   user: {
@@ -262,7 +268,7 @@ definePlugin({
   search: {
     methods: {
       keyword: {
-        name: '关键词',
+        name: '漫画',
         getStream(input, sort) {
           return jm.api.search.utils.createKeywordStream(input, <jm.SortType>sort)
         },
@@ -272,6 +278,17 @@ definePlugin({
           return []
         },
       },
+      ...fromPairs(Object.entries(jm.api.blog.blogType).map(v => [v[0], {
+        name: v[1],
+        getStream(input, sort) {
+          return jm.api.blog.createBlogsStream(<jm.api.blog.BlogType>v[0], input, <jm.SortType>sort)
+        },
+        sorts: jm.sortMap,
+        defaultSort: '',
+        async getAutoComplete(_input, _signal) {
+          return []
+        },
+      }])),
       category: {
         name: '分类',
         getStream(input, sort) {
@@ -283,6 +300,11 @@ definePlugin({
           return []
         },
       }
-    }
+    },
+    tabbar: Object.entries(jm.api.blog.blogType).map(v => ({
+      comp: TabbarBlog,
+      id: v[0],
+      title: v[1]
+    }))
   }
 })

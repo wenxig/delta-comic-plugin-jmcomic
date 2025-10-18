@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BlogLayout: typeof import('./src/components/blogLayout.vue')['default']
     Card: typeof import('./src/components/card.vue')['default']
     CommentRow: typeof import('./src/components/commentRow.vue')['default']
     Edit: typeof import('./src/components/edit.vue')['default']
@@ -28,6 +29,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tabbar: typeof import('./src/components/tabbar.vue')['default']
+    TabbarBlog: typeof import('./src/components/tabbarBlog.vue')['default']
     User: typeof import('./src/components/user.vue')['default']
     VanBadge: typeof import('vant/es')['Badge']
     VanCol: typeof import('vant/es')['Col']
@@ -35,7 +37,6 @@ declare module 'vue' {
     VanRow: typeof import('vant/es')['Row']
     VanSlider: typeof import('vant/es')['Slider']
     VanTag: typeof import('vant/es')['Tag']
-    View: typeof import('./src/components/view.vue')['default']
     WeekPromote: typeof import('./src/components/weekPromote.vue')['default']
   }
 }

@@ -10,6 +10,7 @@ declare global {
     $$lib$$: any
     $$safe$$: boolean
     $layout: Record<string, uni.content.ViewLayoutComp>
+    $view: Record<string, uni.content.ViewComp>
   }
   interface Map<K, V> {
     toJSON(): string
