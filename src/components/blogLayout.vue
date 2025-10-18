@@ -13,9 +13,6 @@ const raw = computed(() => union.value.$$meta.raw)
 
 <template>
   <NScrollbar class="!h-[100vh] w-full">
-    <div>
-      <slot name="view" />
-    </div>
     <div v-html="raw.content"></div>
   </NScrollbar>
 </template>

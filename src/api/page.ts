@@ -2,6 +2,7 @@ import { pluginName } from "@/symbol"
 import { uni, Utils } from "delta-comic-core"
 import { jm } from "."
 import { createCommonBlogToUniItem, createFullBlogToUniItem, createRecommendToUniItem } from "./api/utils"
+import { Fragment } from "vue/jsx-runtime"
 
 export class JmComicPage extends uni.content.ContentPage {
   public static contentType = uni.content.ContentPage.toContentTypeString({
@@ -41,10 +42,9 @@ export class JmComicPage extends uni.content.ContentPage {
   public override exportOffline(_save: any): Promise<void> {
     throw new Error("Method not implemented.")
   }
-  public ViewComp
+  public ViewComp = <any>Fragment
   constructor(preload: uni.content.PreloadValue, id: string, ep: string) {
     super(preload, id, ep)
-    this.ViewComp = window.$view.images
   }
 }
 

@@ -3,7 +3,7 @@ import { definePlugin, uni, Utils } from "delta-comic-core"
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
 import { api, image } from "./api/forks"
-import { entries, fromPairs, inRange, isString } from 'lodash-es'
+import { fromPairs, inRange, isString } from 'lodash-es'
 import axios from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
