@@ -7,14 +7,6 @@ import type { _jmUser } from '../user'
 
 export namespace _jmApiUser {
   const { PromiseContent } = Utils.data
-  export const buyBadge = PromiseContent.fromAsyncFunction((badgeId: number, signal?: AbortSignal) => {
-    const user = uni.user.User.userBase.get(pluginName)
-    if (!user) throw new Error('not login')
-    return jmStore.api.value!.post('/coin', {
-      uid: user.id,
-      task_id: badgeId
-    }, { signal })
-  })
   export const createFavouriteStream = () => jmStream(async (page, signal) => {
     const { list, total } = await jmStore.api.value!.get<{
       list: JmType.comic.RawCommonComic[],
@@ -37,8 +29,10 @@ export namespace _jmApiUser {
       daily_id: number
     }>(`/daily?user_id=${user?.id}`, { signal })
     try {
-      await jmStore.api.value!.post(`/daily_chk?user_id=${user?.id}&daily_id=${dailyInfo.daily_id}`, undefined, { signal })
-    } catch { }
+      await jmStore.api.value!.postForm(`/daily_chk`, { user_id: user?.id, daily_id: dailyInfo.daily_id }, { signal })
+    } catch (err) {
+      console.log('api daily check', err)
+    }
   })
 
   //useredit
@@ -49,4 +43,38 @@ export namespace _jmApiUser {
   export const setUser = PromiseContent.fromAsyncFunction((uid: number | string, user: _jmUser.UserEdit, signal?: AbortSignal) =>
     jmStore.api.value!.postForm(`/useredit/${uid}`, user, { signal })
   )
-} 
+}
+
+export namespace _jmApiUser.badge {
+  const { PromiseContent } = Utils.data
+  export const buy = PromiseContent.fromAsyncFunction((badgeId: number, signal?: AbortSignal) => {
+    const user = uni.user.User.userBase.get(pluginName)
+    if (!user) throw new Error('not login')
+    return jmStore.api.value!.postForm('/coin', {
+      uid: user.id,
+      task_id: badgeId
+    }, { signal })
+  })
+  export const getMy = PromiseContent.fromAsyncFunction((signal?: AbortSignal) => {
+    const user = uni.user.User.userBase.get(pluginName)
+    if (!user) throw new Error('not login')
+    return jmStore.api.value!.get('/coin', {
+      params: {
+        type: 'badge',
+        filter: 'my'
+      },
+      signal
+    })
+  })
+  export const getAll = PromiseContent.fromAsyncFunction((signal?: AbortSignal) => {
+    const user = uni.user.User.userBase.get(pluginName)
+    if (!user) throw new Error('not login')
+    return jmStore.api.value!.get('/coin', {
+      params: {
+        type: 'badge',
+        filter: 'all'
+      },
+      signal
+    })
+  })
+}
