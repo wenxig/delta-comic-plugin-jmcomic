@@ -2,7 +2,7 @@
 import { jm } from '@/api'
 import { jmStore } from '@/store'
 import { useResizeObserver, until } from '@vueuse/core'
-import { Comp, PluginConfigSearchTabbar, Store, uni, Utils } from 'delta-comic-core'
+import { Comp, PluginConfigSearchTabbar, Store, Utils } from 'delta-comic-core'
 import { isEmpty } from 'lodash-es'
 import { shallowRef, ref, onMounted, computed } from 'vue'
 import { ComponentExposed } from 'vue-component-type-helpers'
@@ -41,13 +41,7 @@ const dataSource = computed(() => {
 
 <template>
   <Comp.Waterfall :source="dataSource" v-slot="{ item }" ref="list">
-    <Card :item free-height type="small" @click="$router.force.push({
-      name: 'content',
-      params: {
-        contentType: uni.content.ContentPage.toContentTypeString(item.contentType),
-        id: item.id,
-        ep: item.$thisEp.index
-      }
-    })" />
+    <Card :item free-height type="small"
+      @click="Utils.eventBus.SharedFunction.call('routeToContent', item.contentType, item.id, item.$thisEp.index)" />
   </Comp.Waterfall>
 </template>

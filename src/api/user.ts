@@ -145,7 +145,7 @@ export namespace _jmUser {
         avatar: c.photo.includes('nopic') ? undefined : {
           $$plugin: pluginName,
           forkNamespace: 'default',
-          path: `/media/users/${c.user_photo}`
+          path: `/media/users/${c.uid}.jpg`
         },
         $$plugin: pluginName
       })

@@ -30,7 +30,7 @@ export default defineConfig({
       userscript: {
         name: 'jmcomic',
         version: _package.version,
-        author: _package.author.name
+        author: _package.author.name,
       },
       build: {
         externalGlobals: {
@@ -50,6 +50,11 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     }
+  },
+  build: {
+    sourcemap: true,
+    // minify: true,
+    // cssMinify: true
   },
   server: {
     port: 6173

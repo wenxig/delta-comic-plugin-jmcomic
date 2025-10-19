@@ -164,7 +164,7 @@ export const createCommonBlogToUniItem = (blog: jm.blog.RawCommonBlog, searchSou
   },
   author: [blog.username],
   commentSendable: true,
-  categories: blog.tags.map(v => ({
+  categories: blog.tags.flatMap(v => v.split(',')).map(v => ({
     name: v,
     search: {
       keyword: v,
@@ -200,7 +200,7 @@ export const createFullBlogToUniItem = (blog: jm.blog.RawFullBlog, searchSource:
   },
   author: [blog.username],
   commentSendable: true,
-  categories: blog.tags.map(v => ({
+  categories: blog.tags.flatMap(v => v.split(',')).map(v => ({
     name: v,
     search: {
       keyword: v,
