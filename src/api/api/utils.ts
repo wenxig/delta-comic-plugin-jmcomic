@@ -1,6 +1,6 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
-import { ceil, isEmpty, uniq } from "es-toolkit/compat-es"
+import { ceil, isEmpty, uniq } from "es-toolkit/compat"
 import { JmBlogPage, JmComicPage } from "../page"
 import { Utils } from "delta-comic-core"
 import dayjs from "dayjs"
@@ -235,6 +235,7 @@ export const jmStream = <T>(api: (page: number, signal: AbortSignal) => PromiseL
     if (that.pages.value <= that.page.value) return
     that.page.value++
     const { list: result, total } = await api(that.page.value, signal)
+    if (total == 0 || isEmpty(result)) return
     if (that.page.value == 1) that.pageSize.value = result.length
     that.total.value = total
     // eg: total: 300 result: 60 pages: t/r向上取整

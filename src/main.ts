@@ -90,7 +90,7 @@ definePlugin({
           }
           if (!res.data.data) return res
           if (isString(res.data.data)) res.data = decrypt(res.data.data)
-          console.log('response', res.config.url, '->', res.data)
+          console.log('response', res.config.url, res.config.params ?? {}, '->', res.data)
           return res
         })
         return ins

@@ -34,7 +34,7 @@ export default defineConfig({
           vant: 'window.$$lib$$.Vant',
           'naive-ui': 'window.$$lib$$.Naive',
           axios: 'window.$$lib$$.Axios',
-          'es-tookit': 'window.$$lib$$.EsKits',
+          'es-toolkit': 'window.$$lib$$.EsKits',
           'delta-comic-core': 'window.$$lib$$.Dcc',
           'vue-router': 'window.$$lib$$.VR',
           'crypto-js': 'window.$$lib$$.Crypto'

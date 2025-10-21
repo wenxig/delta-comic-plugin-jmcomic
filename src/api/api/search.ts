@@ -1,5 +1,5 @@
 import { type jm as JmType } from '..'
-import { random } from "es-toolkit/compat-es"
+import { random } from "es-toolkit/compat"
 import { Utils } from "delta-comic-core"
 import { jmStore } from '@/store'
 import { createCommonToUniItem, jmStream } from './utils'
