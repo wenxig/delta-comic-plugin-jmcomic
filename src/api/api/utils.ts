@@ -1,6 +1,6 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
-import { ceil, isEmpty, uniq } from "lodash-es"
+import { ceil, isEmpty, uniq } from "es-toolkit/compat-es"
 import { JmBlogPage, JmComicPage } from "../page"
 import { Utils } from "delta-comic-core"
 import dayjs from "dayjs"

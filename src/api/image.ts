@@ -2,7 +2,7 @@ import { pluginName } from "@/symbol"
 import axios from "axios"
 import { MD5 } from "crypto-js"
 import { uni, Utils } from "delta-comic-core"
-import { padStart } from "lodash-es"
+import { padStart } from "es-toolkit/compat-es"
 import { useWebWorkerFn } from '@vueuse/core'
 
 export namespace _jmImage {

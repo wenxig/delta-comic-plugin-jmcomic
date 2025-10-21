@@ -6,7 +6,7 @@ import { parseBlog } from '@/utils/blog'
 import { LikeFilled } from '@vicons/antd'
 import { ArrowBackIosRound, ChatBubbleOutlineOutlined, PlusRound } from '@vicons/material'
 import { Comp, uni, Utils } from 'delta-comic-core'
-import { isEmpty } from 'lodash-es'
+import { isEmpty } from 'es-toolkit/compat'
 import { NScrollbar } from 'naive-ui'
 import { Component, computed, shallowRef } from 'vue'
 

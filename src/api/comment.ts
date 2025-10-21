@@ -3,7 +3,7 @@ import { _jmImage } from "./image"
 import DOMPurify from 'dompurify'
 import { uni, Utils } from "delta-comic-core"
 import { pluginName } from "@/symbol"
-import { isEmpty } from "lodash-es"
+import { isEmpty } from "es-toolkit/compat-es"
 import { jm } from "."
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'

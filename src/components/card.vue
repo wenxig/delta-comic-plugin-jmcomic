@@ -2,7 +2,7 @@
 import { LikeOutlined } from '@vicons/antd'
 import { AccessTimeRound, DrawOutlined } from '@vicons/material'
 import { Comp, uni, Utils } from 'delta-comic-core'
-import { isEmpty } from 'lodash-es'
+import { isEmpty } from 'es-toolkit/compat'
 import { StyleValue } from 'vue'
 const $props = defineProps<{
   item: uni.item.Item

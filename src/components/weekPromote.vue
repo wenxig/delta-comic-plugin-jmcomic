@@ -2,7 +2,7 @@
 import { jm } from '@/api'
 import { jmStore } from '@/store'
 import { Comp, Store, Utils } from 'delta-comic-core'
-import { first, isUndefined, last } from 'lodash-es'
+import { first, isUndefined, last } from 'es-toolkit/compat'
 import { watch } from 'vue'
 defineProps<{
   isActive: boolean

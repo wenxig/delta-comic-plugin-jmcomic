@@ -3,7 +3,7 @@ import userIcon from '@/assets/images/userIcon.webp?url'
 import { jm } from '@/api'
 import { computed } from 'vue'
 import { Comp } from 'delta-comic-core'
-import { isEmpty } from 'lodash-es';
+import { isEmpty } from 'es-toolkit/compat'
 
 const $props = defineProps<{
   user: jm.user.CommentUser | jm.user.UserMe
