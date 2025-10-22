@@ -16,6 +16,8 @@ import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
 import BlogLayout from "./components/blogLayout.vue"
 import TabbarBlog from "./components/tabbarBlog.vue"
+import { BadgeRound } from "@vicons/material"
+import Buy from "./components/badge/buy.vue"
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -193,7 +195,17 @@ definePlugin({
       upload(items) {
         return Promise.all(items.map(item => jm.api.user.favouriteComic(item.id)))
       },
-    }
+    },
+    userActionPages: [{
+      title: '成就',
+      items: [{
+        type: 'button',
+        icon: BadgeRound,
+        key: 'all-badge',
+        name: '购买勋章',
+        page: Buy
+      }]
+    }]
   },
   otherProgress: [
     {
