@@ -47,7 +47,7 @@ export namespace _jmApiUser {
 
 export namespace _jmApiUser.badge {
   const { PromiseContent } = Utils.data
-  export const buy = PromiseContent.fromAsyncFunction((badgeId: number, signal?: AbortSignal) => {
+  export const buy = PromiseContent.fromAsyncFunction((badgeId: number | string, signal?: AbortSignal) => {
     const user = uni.user.User.userBase.get(pluginName)
     if (!user) throw new Error('not login')
     return jmStore.api.value!.postForm('/coin', {
