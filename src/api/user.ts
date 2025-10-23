@@ -183,6 +183,20 @@ export namespace _jmUser {
     status: string
     website: string
   }
+
+  export interface BadgeItem {
+    id: string
+    name: string
+    type: 'badge',
+    content: string
+    coin: string
+    rule: string
+    begin_time: string  // 2021-05-06 00:00:00
+    end_time: string  //2080-05-06 23:59:59
+    created_at: string //2021-05-06 13:48:16
+    updated_at: string  // 2021-05-06 13:48:16
+    done: boolean //是否已经购买
+  }
 }
 
 

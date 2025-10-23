@@ -58,7 +58,7 @@ export namespace _jmApiUser.badge {
   export const getMy = PromiseContent.fromAsyncFunction((signal?: AbortSignal) => {
     const user = uni.user.User.userBase.get(pluginName)
     if (!user) throw new Error('not login')
-    return jmStore.api.value!.get('/coin', {
+    return jmStore.api.value!.get('/tasks', {
       params: {
         type: 'badge',
         filter: 'my'
@@ -66,15 +66,16 @@ export namespace _jmApiUser.badge {
       signal
     })
   })
-  export const getAll = PromiseContent.fromAsyncFunction((signal?: AbortSignal) => {
+  export const getAll = PromiseContent.fromAsyncFunction(async (signal?: AbortSignal) => {
     const user = uni.user.User.userBase.get(pluginName)
     if (!user) throw new Error('not login')
-    return jmStore.api.value!.get('/coin', {
+    const all = await jmStore.api.value!.get<{ list: _jmUser.BadgeItem[] }>('/tasks', {
       params: {
         type: 'badge',
         filter: 'all'
       },
       signal
     })
+    return all.list
   })
 }
