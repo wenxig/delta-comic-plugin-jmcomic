@@ -4,6 +4,7 @@ import { jmStore } from '@/store'
 import { pluginName } from '@/symbol'
 import { createCommonToUniItem, jmStream } from './utils'
 import type { _jmUser } from '../user'
+import { isString } from 'es-toolkit/compat'
 
 export namespace _jmApiUser {
   const { PromiseContent } = Utils.data
@@ -55,20 +56,20 @@ export namespace _jmApiUser.badge {
       task_id: badgeId
     }, { signal })
   })
-  export const getMy = PromiseContent.fromAsyncFunction((signal?: AbortSignal) => {
+  export const getMy = PromiseContent.fromAsyncFunction(async (signal?: AbortSignal) => {
     const user = uni.user.User.userBase.get(pluginName)
     if (!user) throw new Error('not login')
-    return jmStore.api.value!.get('/tasks', {
+    const my = await jmStore.api.value!.get<{ list: _jmUser.BadgeItem[] }>('/tasks', {
       params: {
         type: 'badge',
-        filter: 'my'
+        filter: 'my',
+        uid: user.id
       },
       signal
     })
+    return my.list
   })
   export const getAll = PromiseContent.fromAsyncFunction(async (signal?: AbortSignal) => {
-    const user = uni.user.User.userBase.get(pluginName)
-    if (!user) throw new Error('not login')
     const all = await jmStore.api.value!.get<{ list: _jmUser.BadgeItem[] }>('/tasks', {
       params: {
         type: 'badge',
@@ -77,5 +78,18 @@ export namespace _jmApiUser.badge {
       signal
     })
     return all.list
+  })
+  export const changeOrder = PromiseContent.fromAsyncFunction(async (idList: string[], signal?: AbortSignal) => {
+    const user = uni.user.User.userBase.get(pluginName)
+    if (!user) throw new Error('not login')
+    const result = await jmStore.api.value!.postForm('/tasks', {
+      type: 'badge',
+      uid: user.id,
+      new_sort_ids: idList.join(','),
+      task_id: 0
+    }, {
+      signal
+    })
+    return result
   })
 }

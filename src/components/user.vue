@@ -13,14 +13,14 @@ const customUser = computed(() => $props.user.customUser.user)
 </script>
 
 <template>
-  <NThing class="bg-(--van-background-2) overflow-hidden relative w-full">
+  <NThing class="bg-(--van-background-2) overflow-hidden relative w-full text-nowrap">
     <template #avatar>
       <Comp.Image :fallback="userIcon" previewable :src="user.avatar" class="ml-1 mt-1 size-16" round fit="cover"
         :retry-max="2" />
     </template>
     <template #header>
       <div class="mt-2 -mb-2 flex items-center">
-        <span>{{ user.name }} </span>
+        <span>{{ user.name }}</span>
         <div class="flex mx-1 items-center text-(--nui-primary-color)" v-if="customUser.gender == 'Male'">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="w-4"
             viewBox="0 0 1024 1024">

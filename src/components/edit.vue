@@ -19,7 +19,7 @@ const submit = async () => {
 <template>
   <NForm :model="jmStore.useredit.value" label-placement="top" class="!bg-(--van-background-2) !p-3"
     v-if="jmStore.useredit.value" @submit.stop.prevent :disabled="isSubmitting">
-    <NDivider title-placement="left">
+    <NDivider title-placement="left" class="!mt-0">
       个人信息
     </NDivider>
     <NFormItem label="昵称" path="nickName">
@@ -40,7 +40,7 @@ const submit = async () => {
       辅助信息
     </NDivider>
     <NFormItem label="生日" path="nickName">
-      <NDatePicker type="date" value-format="yyyy-MM-DD" clearable
+      <NDatePicker type="date" value-format="yyyy-MM-dd" clearable
         v-model:formatted-value="jmStore.useredit.value.birthday" />
     </NFormItem>
     <NFormItem label="结婚状态" path="relations">

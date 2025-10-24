@@ -19,7 +19,8 @@ export const createLessToUniItem = (comic: jm.comic.RawLessComic) => new jm.comi
       keyword: v,
       sort: '',
       source: 'keyword'
-    }
+    },
+    group: '标签'
   })),
   cover: {
     $$plugin: pluginName,
@@ -50,6 +51,7 @@ export const createCommonToUniItem = (comic: jm.comic.RawCommonComic) => new jm.
   author: spiltUsers(comic.author),
   categories: uniq([comic.category.title ?? '', comic.category_sub.title ?? '']).filter(v => !isEmpty(v)).map(v => ({
     name: v,
+    group: '分类',
     search: {
       keyword: v,
       sort: '',
@@ -111,6 +113,7 @@ export const createFullToUniItem = (comic: jm.comic.RawFullComic) => new jm.comi
   author: comic.author,
   categories: comic.tags.filter(v => !isEmpty(v)).map(v => ({
     name: v,
+    group: '标签',
     search: {
       keyword: v,
       sort: '',
@@ -118,14 +121,16 @@ export const createFullToUniItem = (comic: jm.comic.RawFullComic) => new jm.comi
     }
   }))
     .concat(comic.works.map(v => ({
-      name: `作品:${v}`,
+      name: v,
+      group: '作品',
       search: {
         keyword: v,
         sort: '',
         source: 'keyword'
       }
     })), comic.actors.map(v => ({
-      name: `角色:${v}`,
+      name: v,
+      group: '角色',
       search: {
         keyword: v,
         sort: '',
@@ -170,7 +175,8 @@ export const createCommonBlogToUniItem = (blog: jm.blog.RawCommonBlog, searchSou
       keyword: v,
       sort: '',
       source: searchSource
-    }
+    },
+    group:'标签'
   })),
   contentType: JmBlogPage.contentType,
   cover: {
@@ -202,6 +208,7 @@ export const createFullBlogToUniItem = (blog: jm.blog.RawFullBlog, searchSource:
   commentSendable: true,
   categories: blog.tags.flatMap(v => v.split(',')).map(v => ({
     name: v,
+    group: '标签',
     search: {
       keyword: v,
       sort: '',

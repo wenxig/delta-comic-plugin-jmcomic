@@ -16,8 +16,9 @@ import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
 import BlogLayout from "./components/blogLayout.vue"
 import TabbarBlog from "./components/tabbarBlog.vue"
-import { BadgeRound } from "@vicons/material"
+import { BadgeOutlined, BadgeRound } from "@vicons/material"
 import Buy from "./components/badge/buy.vue"
+import BadgeEdit from './components/badge/edit.vue';
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -199,6 +200,12 @@ definePlugin({
     userActionPages: [{
       title: '成就',
       items: [{
+        type: 'button',
+        icon: BadgeOutlined,
+        key: 'change-badge',
+        name: '更改勋章',
+        page: BadgeEdit
+      }, {
         type: 'button',
         icon: BadgeRound,
         key: 'all-badge',

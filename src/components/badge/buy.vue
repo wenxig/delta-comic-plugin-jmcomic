@@ -49,7 +49,7 @@ const buyBadge = (item: jm.user.BadgeItem) => Utils.message.createLoadingMessage
 </script>
 
 <template>
-  <div class="!size-full">
+  <NSpin :show="isBuying" class="!size-full *:!size-full">
     <div class="w-full h-[calc(10%-3px)] mb-[3px] bg-(--van-background-2) rounded-b-lg flex flex-col items-center">
       <NInput placeholder="输入内容以过滤..." v-model:value="inputModel" @blur="inputFilter = inputModel"
         class="!w-[calc(100%-8px)]" />
@@ -110,5 +110,5 @@ const buyBadge = (item: jm.user.BadgeItem) => Utils.message.createLoadingMessage
         </div>
       </button>
     </Comp.Waterfall>
-  </div>
+  </NSpin>
 </template>

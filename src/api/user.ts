@@ -184,11 +184,8 @@ export namespace _jmUser {
     website: string
   }
 
-  export interface BadgeItem {
-    id: string
-    name: string
+  export interface BadgeItem extends RawBadge {
     type: 'badge',
-    content: string
     coin: string
     rule: string
     begin_time: string  // 2021-05-06 00:00:00
