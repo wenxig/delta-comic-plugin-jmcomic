@@ -85,7 +85,7 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
       <NCard title="预览" size="small">
         <User :user="previewUser" />
       </NCard>
-      <div class="flex justify-around h-full">
+      <div class="flex justify-around h-full shrink-0">
         <VueDraggable
           class="flex flex-col gap-2 p-4 w-[calc(50%-8px)] h-full bg-(--van-background-2) rounded overflow-auto"
           v-model="allList" :animation="150" ghostClass="ghost" group="people">
@@ -97,7 +97,7 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
           <Com :index="index + 1" v-for="(item, index) in myList" :key="item.id" :item />
         </VueDraggable>
       </div>
-      <VanButton @click="reorderBadge(myList)" block class="w-full !rounded-none !h-20" size="large" type="primary">确认更新
+      <VanButton @click="reorderBadge(myList)" block class="!rounded-none !h-20" size="large" type="primary">确认更新
       </VanButton>
     </Comp.Content>
   </NSpin>

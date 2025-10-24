@@ -18,7 +18,7 @@ import BlogLayout from "./components/blogLayout.vue"
 import TabbarBlog from "./components/tabbarBlog.vue"
 import { BadgeOutlined, BadgeRound } from "@vicons/material"
 import Buy from "./components/badge/buy.vue"
-import BadgeEdit from './components/badge/edit.vue';
+import BadgeEdit from './components/badge/edit.vue'
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -90,6 +90,9 @@ definePlugin({
             }
             console.error('[Decryption failed]', res.data, cipherText)
             throw new Error("Decryption failed")
+          }
+          if (isString(res.data) && res.data.startsWith('Could not connect to mysql! Please check your database settings!')) {
+            throw res.data
           }
           if (!res.data.data) return res
           if (isString(res.data.data)) res.data = decrypt(res.data.data)
