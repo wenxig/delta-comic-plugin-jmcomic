@@ -333,6 +333,9 @@ definePlugin({
       comp: TabbarBlog,
       id: v[0],
       title: v[1]
-    }))
+    })),
+    hotPage: {
+      levelBoard: jm.api.search.getLevelboard()
+    }
   }
 })

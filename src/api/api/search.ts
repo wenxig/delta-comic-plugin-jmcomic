@@ -1,6 +1,6 @@
 import { type jm as JmType } from '..'
 import { random } from "es-toolkit/compat"
-import { Utils } from "delta-comic-core"
+import { Utils, type PluginConfigSearchHotPageLevelboard } from "delta-comic-core"
 import { jmStore } from '@/store'
 import { createCommonToUniItem, jmStream } from './utils'
 import { _jmSearch } from '../search'
@@ -43,27 +43,16 @@ export namespace _jmApiSearch {
   export const getRandomComics = PromiseContent.fromAsyncFunction(async (signal?: AbortSignal) => await _jmApiSearch.utils.byCategory('', undefined, random(1, 100), signal))
   export const createRandomComicStream = () => jmStream((_page, signal) => getRandomComics(signal))
 
-  let lvb: PromiseLike<[JmType.comic.JmItem[], JmType.comic.JmItem[], JmType.comic.JmItem[]]> | undefined = undefined
-  export const getLevelboard = PromiseContent.fromAsyncFunction(async () => {
-    if (lvb) {
-      const lv = await lvb
-      return <JmType.search.Levelboard>{
-        day: lv[0],
-        week: lv[1],
-        month: lv[2]
-      }
-    }
-    const [today, week, month] = await (lvb = Promise.all([
-      _jmApiSearch.utils.byCategory('', 'mv_t').then(v => v.list),
-      _jmApiSearch.utils.byCategory('', 'mv_w').then(v => v.list),
-      _jmApiSearch.utils.byCategory('', 'mv_m').then(v => v.list)
-    ]))
-    return <JmType.search.Levelboard>{
-      day: today,
-      week,
-      month
-    }
-  })
+  export const getLevelboard = () => [{
+    name: '日排行',
+    content: () => _jmApiSearch.utils.byCategory('', 'mv_t').setProcessor(v => v.list)
+  }, {
+    name: '周排行',
+    content: () => _jmApiSearch.utils.byCategory('', 'mv_w').setProcessor(v => v.list)
+  }, {
+    name: '月排行',
+    content: () => _jmApiSearch.utils.byCategory('', 'mv_m').setProcessor(v => v.list)
+  }] satisfies PluginConfigSearchHotPageLevelboard[]
 
   export const getCategories = PromiseContent.fromAsyncFunction((signal?: AbortSignal) => jmStore.api.value!.get<JmType.search.CategoriesResult>('/categories', { signal }))
 }
