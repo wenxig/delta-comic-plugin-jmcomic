@@ -22,6 +22,7 @@ defineSlots<{
   default(): void
 }>()
 const isParentSender = computed(() => $props.comment.sender.name == $props.parentComment?.sender.name)
+const isFatherComment = computed(() => $props.comment == $props.parentComment)
 </script>
 
 <template>
@@ -80,14 +81,15 @@ const isParentSender = computed(() => $props.comment.sender.name == $props.paren
         </NPopconfirm>
         <slot />
       </div>
-
-      <div v-if="comment.childrenCount > 0 && !isParentSender"
-        class="w-full rounded bg-(--van-gray-2)/80 dark:bg-(--van-text-color-2)/90 h-9 flex items-center mt-1 mb-3 text-(--nui-primary-color) pointer-events-none">
-        <span class="ml-2 text-[13px]">共{{ comment.childrenCount }}条回复</span>
-        <NIcon size="11px" class="ml-1">
-          <ArrowForwardIosRound />
-        </NIcon>
-      </div>
+      <template v-if="comment.childrenCount > 0">
+        <div v-if="!isFatherComment"
+          class="w-full rounded bg-(--van-gray-2)/80 dark:bg-(--van-text-color-2)/90 h-9 flex items-center mt-1 mb-3 text-(--nui-primary-color) pointer-events-none">
+          <span class="ml-2 text-[13px]">共{{ comment.childrenCount }}条回复</span>
+          <NIcon size="11px" class="ml-1">
+            <ArrowForwardIosRound />
+          </NIcon>
+        </div>
+      </template>
     </VanCol>
   </VanRow>
 </template>

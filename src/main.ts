@@ -4,7 +4,7 @@ import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
 import { api, image } from "./api/forks"
 import { fromPairs, inRange, isString } from 'es-toolkit/compat'
-import axios from 'axios'
+import axios, { formToJSON } from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
 import { JmBlogPage, JmComicPage } from "./api/page"
@@ -96,7 +96,8 @@ definePlugin({
           }
           if (!res.data.data) return res
           if (isString(res.data.data)) res.data = decrypt(res.data.data)
-          console.log('response', res.config.url, res.config.params ?? {}, '->', res.data)
+          const data = res.config.data instanceof FormData ? formToJSON(res.config.data) : res.config.data
+          console.log('response', res.config.url, data ?? res.config.params ?? {}, '->', res.data)
           return res
         })
         return ins
@@ -214,6 +215,11 @@ definePlugin({
         key: 'all-badge',
         name: '购买勋章',
         page: Buy
+      }, {
+        type: 'statistic',
+        key: 'coin',
+        name: 'coin',
+        value: () => jmStore.user.value?.customUser.user.coin ?? NaN
       }]
     }]
   },

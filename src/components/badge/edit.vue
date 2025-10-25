@@ -3,8 +3,8 @@ import { jm } from '@/api'
 import { Comp, Store, uni, Utils } from 'delta-comic-core'
 import { VueDraggable } from 'vue-draggable-plus'
 import { until, createReusableTemplate } from '@vueuse/core'
-import { differenceBy } from 'es-toolkit/compat'
-import { computed, ref, watch } from 'vue'
+import { differenceBy, delay } from 'es-toolkit/compat'
+import { computed, ref, triggerRef, watch } from 'vue'
 import { shallowRef } from 'vue'
 import { jmStore } from '@/store'
 import { pluginName } from '@/symbol'
@@ -51,11 +51,9 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
 
   await jm.api.user.badge.changeOrder(item.map(v => v.id))
 
-  jmStore.loginToken.value = undefined
-  const user = await jm.api.auth.login(jmStore.loginData.value!)
-  jmStore.loginToken.value = user.customUser.user.jwttoken
-  jmStore.loginAvs.value = user.customUser.user.s
-  jmStore.user.value = user
+  jmStore.user.value!.customUser.user.badges = myList.value
+  uni.user.User.userBase.set(pluginName, jmStore.user.value!)
+  triggerRef(jmStore.user)
 
   const my = jm.api.user.badge.getMy()
   await my
@@ -67,7 +65,7 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
 
 <template>
   <Def v-slot="{ item, index }">
-    <div class="flex flex-col items-start justify-center aspect-2/1 bg-(--van-gray-1) rounded relative overflow-hidden">
+    <div class="flex flex-col items-start justify-center aspect-7/3 bg-(--van-gray-1) rounded relative overflow-hidden shrink-0">
       <Comp.Image :src="uni.image.Image.create({
         $$plugin: pluginName,
         forkNamespace: 'default',
@@ -82,22 +80,24 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
   </Def>
   <NSpin :show="isReordering" class="!size-full *:!size-full">
     <Comp.Content :source="temp.allMyOwn" class="h-full flex flex-col" v-if="jmStore.user">
-      <NCard title="预览" size="small">
-        <User :user="previewUser" />
-      </NCard>
-      <div class="flex justify-around h-full shrink-0">
-        <VueDraggable
-          class="flex flex-col gap-2 p-4 w-[calc(50%-8px)] h-full bg-(--van-background-2) rounded overflow-auto"
-          v-model="allList" :animation="150" ghostClass="ghost" group="people">
-          <Com v-for="item in allList" :key="item.id" :item />
-        </VueDraggable>
-        <VueDraggable
-          class="flex flex-col gap-2 p-4 w-[calc(50%-8px)] h-full bg-(--van-background-2) rounded overflow-auto"
-          v-model="myList" :animation="150" group="people" ghostClass="ghost" @update="countLimitCheck">
-          <Com :index="index + 1" v-for="(item, index) in myList" :key="item.id" :item />
-        </VueDraggable>
+      <div class="w-full h-[calc(100%-40px)] flex flex-col">
+        <NCard title="预览" size="small">
+          <User :user="previewUser" />
+        </NCard>
+        <div class="flex justify-around flex-1 min-h-0">
+          <VueDraggable
+            class="flex flex-col gap-2 p-4 w-[calc(50%-8px)] bg-(--van-background-2) rounded overflow-auto min-h-0"
+            v-model="allList" :animation="150" ghostClass="ghost" group="people">
+            <Com v-for="item in allList" :key="item.id" :item />
+          </VueDraggable>
+          <VueDraggable
+            class="flex flex-col gap-2 p-4 w-[calc(50%-8px)] bg-(--van-background-2) rounded overflow-auto min-h-0"
+            v-model="myList" :animation="150" group="people" ghostClass="ghost" @update="countLimitCheck">
+            <Com :index="index + 1" v-for="(item, index) in myList" :key="item.id" :item />
+          </VueDraggable>
+        </div>
       </div>
-      <VanButton @click="reorderBadge(myList)" block class="!rounded-none !h-20" size="large" type="primary">确认更新
+      <VanButton @click="reorderBadge(myList)" block class="!rounded-none !h-10" size="large" type="primary">确认更新
       </VanButton>
     </Comp.Content>
   </NSpin>

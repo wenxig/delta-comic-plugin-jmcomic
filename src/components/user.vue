@@ -13,7 +13,7 @@ const customUser = computed(() => $props.user.customUser.user)
 </script>
 
 <template>
-  <NThing class="bg-(--van-background-2) overflow-hidden relative w-full text-nowrap">
+  <NThing class="bg-(--van-background-2) overflow-hidden relative w-full text-nowrap *:w-full" content-class="w-full">
     <template #avatar>
       <Comp.Image :fallback="userIcon" previewable :src="user.avatar" class="ml-1 mt-1 size-16" round fit="cover"
         :retry-max="2" />
@@ -60,13 +60,13 @@ const customUser = computed(() => $props.user.customUser.user)
       <div class="flex !w-[60%] items-center">
         <span
           class="mr-1 no-color-change-transition text-xs text-(--van-text-color-2)">{{ user.customUser.expInfo.exp ?? 0 }}/{{
-            user.customUser.expInfo.$nextLevelExp ?? 0 }}</span>
+          user.customUser.expInfo.$nextLevelExp ?? 0 }}</span>
         <NProgress color="var(--nui-primary-color)" type="line" status="info"
           :percentage="((user.customUser.expInfo.$exp ?? 0) / (user.customUser.expInfo.$nextLevelExp ?? 0)) * 100"
           :show-indicator="false" />
       </div>
     </template>
-    <div v-if="!isSmall && !isEmpty(user.customUser.expInfo.$badges)">
+    <div v-if="!isSmall && !isEmpty(user.customUser.expInfo.$badges)" class="w-full">
       <VanTag type="primary" plain size="large" class="ml-3 mb-2">
         <NIcon size="1rem">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32">
@@ -79,11 +79,12 @@ const customUser = computed(() => $props.user.customUser.user)
         </NIcon>
         勋章墙
       </VanTag>
-      <div class="flex flex-nowrap w-full px-1 justify-around items-center h-full">
-        <div class="flex flex-col justify-center items-center text-(--van-text-color-2)"
+      <div class="flex flex-nowrap w-full px-1 justify-around items-center h-full relative">
+        <div
+          class="flex flex-col justify-center items-center text-(--van-text-color-2) shrink-0 w-1/5 even:*:last:mt-4 odd:*:last:mb-4"
           v-for="badge of user.customUser.expInfo.$badges">
           <Comp.Image :src="badge.$content" previewable class="size-13" hide-error />
-          <span>{{ badge.name }}</span>
+          <span class="">{{ badge.name }}</span>
         </div>
       </div>
     </div>
