@@ -3,7 +3,7 @@ import { jm } from '@/api'
 import { Comp, Store, uni, Utils } from 'delta-comic-core'
 import { VueDraggable } from 'vue-draggable-plus'
 import { until, createReusableTemplate } from '@vueuse/core'
-import { differenceBy, delay } from 'es-toolkit/compat'
+import { differenceBy } from 'es-toolkit/compat'
 import { computed, ref, triggerRef, watch } from 'vue'
 import { shallowRef } from 'vue'
 import { jmStore } from '@/store'
@@ -27,10 +27,11 @@ watch(jmStore.user, user => {
 }, { immediate: true })
 
 const countLimitCheck = () => {
-  if (myList.value.length > 5) {
-    const last = myList.value.at(-1)!
-    myList.value.pop()
-    allList.value.unshift(last)
+  if (myList.value.length >= 5) {
+    // const last = myList.value.at(-1)!
+    // myList.value.pop()
+    // allList.value.unshift(last)
+    return false
   }
 }
 const [Def, Com] = createReusableTemplate<{
@@ -65,7 +66,8 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
 
 <template>
   <Def v-slot="{ item, index }">
-    <div class="flex flex-col items-start justify-center aspect-7/3 bg-(--van-gray-1) rounded relative overflow-hidden shrink-0">
+    <div
+      class="flex flex-col items-start justify-center aspect-7/3 bg-(--van-gray-1) rounded relative overflow-hidden shrink-0">
       <Comp.Image :src="uni.image.Image.create({
         $$plugin: pluginName,
         forkNamespace: 'default',
@@ -85,14 +87,14 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
           <User :user="previewUser" />
         </NCard>
         <div class="flex justify-around flex-1 min-h-0">
-          <VueDraggable
+          <VueDraggable :onMove="countLimitCheck"
             class="flex flex-col gap-2 p-4 w-[calc(50%-8px)] bg-(--van-background-2) rounded overflow-auto min-h-0"
             v-model="allList" :animation="150" ghostClass="ghost" group="people">
             <Com v-for="item in allList" :key="item.id" :item />
           </VueDraggable>
           <VueDraggable
             class="flex flex-col gap-2 p-4 w-[calc(50%-8px)] bg-(--van-background-2) rounded overflow-auto min-h-0"
-            v-model="myList" :animation="150" group="people" ghostClass="ghost" @update="countLimitCheck">
+            v-model="myList" :animation="150" group="people" ghostClass="ghost">
             <Com :index="index + 1" v-for="(item, index) in myList" :key="item.id" :item />
           </VueDraggable>
         </div>

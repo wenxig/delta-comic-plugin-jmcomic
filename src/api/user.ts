@@ -194,6 +194,19 @@ export namespace _jmUser {
     updated_at: string  // 2021-05-06 13:48:16
     done: boolean //是否已经购买
   }
+  export interface TitleItem {
+    id: string
+    name: string,
+    type: "title"
+    content: string
+    coin: '0'
+    rule: string
+    begin_time: string
+    end_time: string
+    created_at: string
+    updated_at: string
+    done: boolean
+  }
 }
 
 

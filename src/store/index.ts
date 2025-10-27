@@ -16,3 +16,4 @@ export namespace jmStore {
   export const promotes = shallowRef<jm.search.Promote[]>()
   export const wb = shallowRef<jm.search.WeekBestList>()
 }
+window.$api.jmStore = jmStore

@@ -9,16 +9,17 @@ import { jmStore } from "./store"
 import { jm } from "./api"
 import { JmBlogPage, JmComicPage } from "./api/page"
 import Card from "./components/card.vue"
-import CommentRow from "./components/commentRow.vue"
+import CommentRow from "./components/comment/commentRow.vue"
 import User from "./components/user.vue"
 import Edit from "./components/edit.vue"
 import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
 import BlogLayout from "./components/blogLayout.vue"
 import TabbarBlog from "./components/tabbarBlog.vue"
-import { BadgeOutlined, BadgeRound } from "@vicons/material"
+import { BadgeOutlined, BadgeRound, CategoryOutlined, CategoryRound } from "@vicons/material"
 import Buy from "./components/badge/buy.vue"
 import BadgeEdit from './components/badge/edit.vue'
+import Select from "./components/title/select.vue"
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -95,6 +96,9 @@ definePlugin({
             throw res.data
           }
           if (!res.data.data) return res
+          if (isString(res.data)) {
+            res.data = JSON.parse(res.data.replace(/}\[.+/gims, '}'))
+          }
           if (isString(res.data.data)) res.data = decrypt(res.data.data)
           const data = res.config.data instanceof FormData ? formToJSON(res.config.data) : res.config.data
           console.log('response', res.config.url, data ?? res.config.params ?? {}, '->', res.data)
@@ -205,13 +209,13 @@ definePlugin({
       title: '成就',
       items: [{
         type: 'button',
-        icon: BadgeOutlined,
+        icon: CategoryOutlined,
         key: 'change-badge',
         name: '更改勋章',
         page: BadgeEdit
       }, {
         type: 'button',
-        icon: BadgeRound,
+        icon: CategoryRound,
         key: 'all-badge',
         name: '购买勋章',
         page: Buy
@@ -220,6 +224,17 @@ definePlugin({
         key: 'coin',
         name: 'coin',
         value: () => jmStore.user.value?.customUser.user.coin ?? NaN
+      }, {
+        type: 'statistic',
+        key: 'charge',
+        name: '充能',
+        value: () => jmStore.user.value?.customUser.user.charge??''
+      }, {
+        type: 'button',
+        icon: BadgeOutlined,
+        key: 'change-title',
+        name: '更改称号',
+        page: Select
       }]
     }]
   },

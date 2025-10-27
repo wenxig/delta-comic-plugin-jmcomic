@@ -43,9 +43,9 @@ export namespace _jmComment {
     override sendComment(text: string, signal?: AbortSignal): PromiseLike<any> {
       const raw: RawComment = this.$$meta!.raw
       if (isEmpty(raw.parent_CID)) {
-        return jm.api.comment.sendComicComment(raw.AID, text, false, signal)
+        return jm.api.comic.sendComment(raw.AID, text, false, signal)
       }
-      return jm.api.comment.sendChildComment(raw.AID, raw.parent_CID, text, false, signal)
+      return jm.api.comic.sendChildComment(raw.AID, raw.parent_CID, text, false, signal)
     }
     override children
     constructor(v: RawComment) {
@@ -65,7 +65,6 @@ export namespace _jmComment {
         sender,
         time: (() => {
           const date = dayjs(v.addtime, 'MMM D, YYYY')
-          console.log(v.addtime, date, v.update_at)
           if (v.update_at != '0') {
             const time = dayjs(Number(v.update_at))
             date.set('hour', time.hour())
