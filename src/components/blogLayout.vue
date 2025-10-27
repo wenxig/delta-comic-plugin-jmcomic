@@ -24,7 +24,11 @@ const user = computed(() => new jm.user.BlogUser(raw.value))
 const createURL = (url: string) => new URL(url)
 
 const isLiked = shallowRef(union.value.isLiked ?? false)
-const handleLike = () => { }
+const handleLike = Utils.data.PromiseContent.fromAsyncFunction(() => jm.api.blog.likeBlog(union.value.id))
+
+const showComment = shallowRef(union.value.isLiked ?? false)
+
+const CommentEl = window.$comp.Comment
 </script>
 
 <template>
@@ -97,7 +101,7 @@ const handleLike = () => { }
   </NScrollbar>
   <div class="w-full h-13 bg-(--van-background-2) !fixed bottom-0 van-hairline--top flex items-center justify-around">
     <Sender :item="union" :aim="union" />
-    <Comp.ToggleIcon padding size="27px" :icon="ChatBubbleOutlineOutlined" dis-changed>
+    <Comp.ToggleIcon padding size="27px" :icon="ChatBubbleOutlineOutlined" dis-changed @click="showComment = true">
       {{ union.commentNumber || '评论' }}
     </Comp.ToggleIcon>
     <Comp.ToggleIcon padding size="27px" v-model="isLiked" @click="handleLike" :icon="LikeFilled">
@@ -105,4 +109,7 @@ const handleLike = () => { }
     </Comp.ToggleIcon>
     <component :is="comp.FavouriteSelect" :item="union" />
   </div>
+  <Comp.Popup v-model:show="showComment" class="w-full h-[90vh]" round position="bottom">
+    <component :is="CommentEl" :item="union" :comments="$props.page.comments" class="h-full" />
+  </Comp.Popup>
 </template>

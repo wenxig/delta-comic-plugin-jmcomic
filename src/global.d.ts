@@ -1,31 +1,35 @@
+import type { Style } from '@capacitor/status-bar'
 import { type useMessage, type useLoadingBar, type useDialog } from 'naive-ui'
 import type { Router } from 'vue-router'
-import type { ExternalLibKey } from './external'
+import { uni } from './struct'
+import { Utils } from './utils';
+import { Component } from 'vue'
+import { ExternalLibKey } from '../external'
 declare global {
   interface Window {
     $message: ReturnType<typeof useMessage>
     $loading: ReturnType<typeof useLoadingBar>
     $dialog: ReturnType<typeof useDialog>
     $api: Record<string, any>
-    $$lib$$: any
+    $$lib$$: Record<ExternalLibKey[keyof ExternalLibKey], any>
     $$safe$$: boolean
+    $router: Router
     $layout: Record<string, uni.content.ViewLayoutComp>
     $view: Record<string, uni.content.ViewComp>
-  }
-  interface Map<K, V> {
-    toJSON(): string
-    toJSONObject(): [K, V][]
-  }
-  interface Set<T> {
-    toJSON(): string
-    toJSONObject(): T[]
+    $comp: {
+      Comment: Component<{
+        item: uni.item.Item
+        comments: Utils.data.RStream<uni.comment.Comment>
+      }>
+    }
+    $isDev: boolean
   }
 }
-export declare module 'axios' {
+declare module 'axios' {
   interface AxiosRequestConfig {
     __retryCount?: number
     disretry?: boolean
-    jm_key?: string
+    allowEmpty?: boolean
   }
 }
 
@@ -45,5 +49,4 @@ export declare module 'vue-router' {
     force?: boolean
   }
 }
-
-export { }
+export {}
