@@ -39,7 +39,6 @@ const dataSource = computed(() => {
 
 <template>
   <Comp.Waterfall :source="dataSource" v-slot="{ item }" ref="list">
-    <Card :item free-height type="small"
-      @click="Utils.eventBus.SharedFunction.call('routeToContent', item.contentType, item.id, item.$thisEp.index)" />
+    <Card :item free-height type="small" />
   </Comp.Waterfall>
 </template>
