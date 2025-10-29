@@ -6,6 +6,13 @@
     "name": "wenxig",
     "email": "wenxinguo12@gmail.com"
   },
+  "homepage": "https://github.com/wenxig/delta-comic-plugin-jmcomic",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenxig/delta-comic-plugin-jmcomic.git"
+  },
+  "license": "AGPL-3.0-only",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -26,7 +33,6 @@
     "vant": "^4.9.21",
     "vue": "^3.5.22",
     "vue-draggable-plus": "^0.6.0",
-    "vue-picture-cropper": "^0.7.0",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {

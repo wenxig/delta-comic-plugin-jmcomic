@@ -16,7 +16,7 @@ import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
 import BlogLayout from "./components/blogLayout.vue"
 import TabbarBlog from "./components/tabbarBlog.vue"
-import { BadgeOutlined, BadgeRound, CategoryOutlined, CategoryRound } from "@vicons/material"
+import { BadgeOutlined, CategoryOutlined, CategoryRound } from "@vicons/material"
 import Buy from "./components/badge/buy.vue"
 import BadgeEdit from './components/badge/edit.vue'
 import Select from "./components/title/select.vue"
@@ -228,7 +228,7 @@ definePlugin({
         type: 'statistic',
         key: 'charge',
         name: '充能',
-        value: () => jmStore.user.value?.customUser.user.charge??''
+        value: () => jmStore.user.value?.customUser.user.charge ?? ''
       }, {
         type: 'button',
         icon: BadgeOutlined,
