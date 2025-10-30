@@ -25,10 +25,12 @@ export default defineConfig(({ command }) => ({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        name: 'jmcomic/禁漫天堂',
+        name: 'jmcomic',
         version: _package.version,
         author: _package.author.name,
         description: _package.description,
+        require: ['core']
+        ['name:ds']: '禁漫天堂'
       },
       build: {
         externalGlobals: command == 'serve' ? undefined : {
