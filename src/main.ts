@@ -1,5 +1,5 @@
 import "@/index.css"
-import { definePlugin, uni, Utils } from "delta-comic-core"
+import { coreModule, definePlugin, requireDepend, uni, Utils } from "delta-comic-core"
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
 import { api, image } from "./api/forks"
@@ -28,6 +28,9 @@ const testAxios = axios.create({
   },
 })
 testAxios.interceptors.response.use(undefined, Utils.request.utilInterceptors.createAutoRetry(testAxios, 2))
+
+const { layout } = requireDepend(coreModule)
+
 definePlugin({
   name: pluginName,
   api: {
@@ -182,7 +185,7 @@ definePlugin({
       [JmBlogPage.contentType]: JmBlogPage
     },
     layout: {
-      [JmComicPage.contentType]: window.$layout.default,
+      [JmComicPage.contentType]: layout.Default,
       [JmBlogPage.contentType]: BlogLayout
     },
     itemCard: {

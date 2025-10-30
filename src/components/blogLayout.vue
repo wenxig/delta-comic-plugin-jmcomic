@@ -5,7 +5,7 @@ import { pluginName } from '@/symbol'
 import { parseBlog } from '@/utils/blog'
 import { LikeFilled } from '@vicons/antd'
 import { ArrowBackIosRound, ChatBubbleOutlineOutlined, PlusRound } from '@vicons/material'
-import { Comp, uni, Utils } from 'delta-comic-core'
+import { Comp, coreModule, requireDepend, uni, Utils } from 'delta-comic-core'
 import { isEmpty } from 'es-toolkit/compat'
 import { NScrollbar } from 'naive-ui'
 import { Component, computed, shallowRef } from 'vue'
@@ -28,7 +28,7 @@ const handleLike = Utils.data.PromiseContent.fromAsyncFunction(() => jm.api.blog
 
 const showComment = shallowRef(union.value.isLiked ?? false)
 
-const CommentEl = window.$comp.Comment
+const { comp: { Comment } } = requireDepend(coreModule)
 </script>
 
 <template>
@@ -110,6 +110,6 @@ const CommentEl = window.$comp.Comment
     <component :is="comp.FavouriteSelect" :item="union" />
   </div>
   <Comp.Popup v-model:show="showComment" class="w-full h-[90vh]" round position="bottom">
-    <component :is="CommentEl" :item="union" :comments="$props.page.comments" class="h-full" />
+    <Comment :item="union" :comments="$props.page.comments" class="h-full" />
   </Comp.Popup>
 </template>

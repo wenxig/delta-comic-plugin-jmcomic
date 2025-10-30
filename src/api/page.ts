@@ -1,8 +1,10 @@
 import { pluginName } from "@/symbol"
-import { uni, Utils } from "delta-comic-core"
+import { coreModule, requireDepend, uni, Utils } from "delta-comic-core"
 import { jm } from "."
 import { createCommonBlogToUniItem, createFullBlogToUniItem, createRecommendToUniItem } from "./api/utils"
 import { defineComponent, h } from "vue"
+
+const { view } = requireDepend(coreModule)
 
 export class JmComicPage extends uni.content.ContentPage {
   public static contentType = uni.content.ContentPage.toContentTypeString({
@@ -45,7 +47,7 @@ export class JmComicPage extends uni.content.ContentPage {
   public ViewComp
   constructor(preload: uni.content.PreloadValue, id: string, ep: string) {
     super(preload, id, ep)
-    this.ViewComp = window.$view.images
+    this.ViewComp = view.Images
   }
 }
 
