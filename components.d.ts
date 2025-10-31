@@ -13,6 +13,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BlogLayout: typeof import('./src/components/blogLayout.vue')['default']
+    BookLayout: typeof import('./src/components/book/bookLayout.vue')['default']
     Buy: typeof import('./src/components/badge/buy.vue')['default']
     Card: typeof import('./src/components/card.vue')['default']
     CommentRow: typeof import('./src/components/comment/commentRow.vue')['default']
@@ -56,6 +57,7 @@ declare module 'vue' {
 // For TSX support
 declare global {
   const BlogLayout: typeof import('./src/components/blogLayout.vue')['default']
+  const BookLayout: typeof import('./src/components/book/bookLayout.vue')['default']
   const Buy: typeof import('./src/components/badge/buy.vue')['default']
   const Card: typeof import('./src/components/card.vue')['default']
   const CommentRow: typeof import('./src/components/comment/commentRow.vue')['default']

@@ -3,7 +3,7 @@ import { coreModule, definePlugin, requireDepend, uni, Utils } from "delta-comic
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
 import { api, image } from "./api/forks"
-import { fromPairs, inRange, isString } from 'es-toolkit/compat'
+import { inRange, isString } from 'es-toolkit/compat'
 import axios, { formToJSON } from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
@@ -324,17 +324,6 @@ definePlugin({
           return []
         },
       },
-      ...fromPairs(Object.entries(jm.api.blog.blogType).map(v => [v[0], {
-        name: v[1],
-        getStream(input, sort) {
-          return jm.api.blog.createBlogsStream(<jm.api.blog.BlogType>v[0], input, <jm.SortType>sort)
-        },
-        sorts: jm.sortMap,
-        defaultSort: '',
-        async getAutoComplete(_input, _signal) {
-          return []
-        },
-      }])),
       category: {
         name: '分类',
         getStream(input, sort) {

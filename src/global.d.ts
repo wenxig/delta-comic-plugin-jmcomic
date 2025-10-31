@@ -13,9 +13,6 @@ declare global {
     $api: Record<string, any>
     $$lib$$: Record<ExternalLibKey[keyof ExternalLibKey], any>
     $$safe$$: boolean
-    $router: Router
-    $layout: Record<string, uni.content.ViewLayoutComp>
-    $isDev: boolean
   }
 }
 declare module 'axios' {

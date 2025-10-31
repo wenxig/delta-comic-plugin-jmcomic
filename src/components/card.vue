@@ -59,7 +59,8 @@ const { comp: { ItemCard } } = requireDepend(coreModule)
         <NIcon color="var(--van-text-color-2)" size="14px">
           <AccessTimeRound />
         </NIcon>
-        <span class="mr-2">{{ Utils.translate.createDateString(item.$updateTime) }}</span>
+        <span class="mr-2"
+          v-if="item.$updateTime.get('year') != 1970">{{ Utils.translate.createDateString(item.$updateTime) }}</span>
       </div>
       <div class="flex flex-nowrap items-center *:text-nowrap van-ellipsis">
         <NIcon color="var(--van-text-color-2)" size="14px">

@@ -8,13 +8,10 @@ import { ArrowBackIosRound, ChatBubbleOutlineOutlined, PlusRound } from '@vicons
 import { Comp, coreModule, requireDepend, uni, Utils } from 'delta-comic-core'
 import { isEmpty } from 'es-toolkit/compat'
 import { NScrollbar } from 'naive-ui'
-import { Component, computed, shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 
 const $props = defineProps<{
   page: JmBlogPage
-  comp: {
-    FavouriteSelect: Component<{ item: uni.item.Item }>
-  }
 }>()
 const union = computed(() => <jm.blog.JmBlog>$props.page.union.value)
 const raw = computed(() => union.value.$$meta.raw)
@@ -28,7 +25,7 @@ const handleLike = Utils.data.PromiseContent.fromAsyncFunction(() => jm.api.blog
 
 const showComment = shallowRef(union.value.isLiked ?? false)
 
-const { comp: { Comment } } = requireDepend(coreModule)
+const { comp: { Comment, FavouriteSelect } } = requireDepend(coreModule)
 </script>
 
 <template>
@@ -107,7 +104,7 @@ const { comp: { Comment } } = requireDepend(coreModule)
     <Comp.ToggleIcon padding size="27px" v-model="isLiked" @click="handleLike" :icon="LikeFilled">
       {{ union.likeNumber ?? '喜欢' }}
     </Comp.ToggleIcon>
-    <component :is="comp.FavouriteSelect" :item="union" />
+    <FavouriteSelect :item="union" />
   </div>
   <Comp.Popup v-model:show="showComment" class="w-full h-[90vh]" round position="bottom">
     <Comment :item="union" :comments="$props.page.comments" class="h-full" />

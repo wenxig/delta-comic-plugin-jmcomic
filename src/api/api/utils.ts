@@ -1,7 +1,7 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
 import { ceil, isEmpty, uniq } from "es-toolkit/compat"
-import { JmBlogPage, JmComicPage } from "../page"
+import { JmBlogPage, JmBookPage, JmComicPage } from "../page"
 import { Utils } from "delta-comic-core"
 import dayjs from "dayjs"
 
@@ -176,7 +176,7 @@ export const createCommonBlogToUniItem = (blog: jm.blog.RawCommonBlog, searchSou
       sort: '',
       source: searchSource
     },
-    group:'标签'
+    group: '标签'
   })),
   contentType: JmBlogPage.contentType,
   cover: {
@@ -236,6 +236,103 @@ export const createFullBlogToUniItem = (blog: jm.blog.RawFullBlog, searchSource:
   updateTime: dayjs(blog.date, 'YYYY-MM-DD').toDate().getTime(),
   isLiked: blog.is_liked
 })
+
+export const createCommonBookToItem = (book: jm.book.RawCommonBook) => new jm.book.JmBook({
+  $$plugin: pluginName,
+  $$meta: {
+    raw: book
+  },
+  author: [book.author],
+  commentSendable: false,
+  categories: [],
+  contentType: JmBookPage.contentType,
+  cover: {
+    $$plugin: pluginName,
+    forkNamespace: 'default',
+    path: book.image
+  },
+  epLength: '1',
+  id: book.id,
+  length: 'unknown',
+  thisEp: {
+    $$plugin: pluginName,
+    index: book.id,
+    name: book.name
+  },
+  title: book.name,
+  commentNumber: 0,
+  likeNumber: 0,
+  viewNumber: 0,
+  updateTime: dayjs(book.update_at, 'YYYY-MM-DD').toDate().getTime(),
+})
+
+export const createListBookToItem = (book: jm.book.RawListBook) => new jm.book.JmBook({
+  $$plugin: pluginName,
+  $$meta: {
+    raw: book,
+    background: {
+      $$plugin: pluginName,
+      forkNamespace: 'default',
+      path: book.background_image
+    }
+  },
+  author: [book.author_name],
+  commentSendable: false,
+  categories: [],
+  contentType: JmBookPage.contentType,
+  cover: {
+    $$plugin: pluginName,
+    forkNamespace: 'default',
+    path: book.author_avatar
+  },
+  epLength: '1',
+  id: book.id,
+  length: 'unknown',
+  thisEp: {
+    $$plugin: pluginName,
+    index: book.id,
+    name: book.author_name
+  },
+  title: book.author_name,
+  commentNumber: 0,
+  likeNumber: 0,
+  viewNumber: 0,
+  updateTime: dateTranslate(book.update_date).toDate().getTime()
+})
+
+export const createRelatedBookToItem = (book: jm.book.RawRelatedBook) => new jm.book.JmBook({
+  $$plugin: pluginName,
+  $$meta: {
+    raw: book,
+  },
+  author: [],
+  commentSendable: false,
+  categories: [],
+  contentType: JmBookPage.contentType,
+  cover: {
+    $$plugin: pluginName,
+    forkNamespace: 'default',
+    path: book.work_image
+  },
+  epLength: '1',
+  id: book.id,
+  length: 'unknown',
+  thisEp: {
+    $$plugin: pluginName,
+    index: book.id,
+    name: book.work_title
+  },
+  title: book.work_title,
+  commentNumber: 0,
+  likeNumber: 0,
+  viewNumber: 0,
+  updateTime: dateTranslate(book.work_date).toDate().getTime()
+})
+
+export const dateTranslate = (date: string) => {
+  const daysAgo = Number(date.match(/^\d+/g)?.[0])
+  return dayjs().add(-daysAgo, 'day')
+}
 
 export const jmStream = <T>(api: (page: number, signal: AbortSignal) => PromiseLike<{ list: T[], total: number }>) => Utils.data.Stream.create<T>(async function* (signal, that) {
   while (true) {

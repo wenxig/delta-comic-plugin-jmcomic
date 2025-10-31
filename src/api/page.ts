@@ -95,3 +95,43 @@ export class JmBlogPage extends uni.content.ContentPage {
     super(preload, id, ep)
   }
 }
+
+export class JmBookPage extends uni.content.ContentPage {
+  public static contentType = uni.content.ContentPage.toContentTypeString({
+    name: 'book',
+    plugin: pluginName
+  })
+  public override plugin = pluginName
+  public override contentType = uni.content.ContentPage.toContentType(JmBlogPage.contentType)
+  public override loadAll() {
+    return Promise.all([
+      // this.detail.content.isLoading.value || this.detail.content.loadPromise(jm.api.book.get(this.ep).then(v => {
+      //   const blog = createFullBlogToUniItem(v.info)
+      //   this.eps.resolve([])
+      //   this.recommends.resolve(v.related_blogs?.map(v => createCommonBlogToUniItem(v)) ?? [])
+      //   this.recommendComics.resolve(v.related_comics?.map(v => createRecommendToUniItem(v)) ?? [])
+      //   this.pid.resolve(blog.id)
+      //   this.detail.resolve(blog)
+      //   this.images.resolve([blog.$cover])
+      //   this.uploader.resolve(new jm.user.BlogUser(blog.$$meta.raw))
+      //   return blog
+      // }))
+    ])
+  }
+  public override comments = Utils.data.Stream.create<uni.comment.Comment>(function* () { })
+  public override reloadAll(): any {
+    throw new Error("Method not implemented.")
+  }
+  public override loadAllOffline(): Promise<any> {
+    throw new Error("Method not implemented.")
+  }
+  public override exportOffline(_save: any): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+  public ViewComp = defineComponent<any>(() => {
+    return () => h('div')
+  })
+  constructor(preload: uni.content.PreloadValue, id: string, ep: string) {
+    super(preload, id, ep)
+  }
+}

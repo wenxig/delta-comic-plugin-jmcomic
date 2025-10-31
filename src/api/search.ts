@@ -1,14 +1,15 @@
 import { _jmComic } from "./comic"
-import { createCommonToUniItem } from "./api/utils"
+import { createCommonBookToItem, createCommonToUniItem } from "./api/utils"
+import type { _jmBook } from "./book"
 
 export namespace _jmSearch {
   export interface RawPromote {
     id: string
     title: string
     slug: string
-    type: string
+    type: string | "library"
     filter_val: string | number
-    content: _jmComic.RawCommonComic[]
+    content: (_jmComic.RawCommonComic | _jmBook.RawCommonBook)[]
   }
   export class Promote implements RawPromote {
     public id: string
@@ -17,14 +18,16 @@ export namespace _jmSearch {
     }
     public title: string
     public slug: string
-    public type: string
+    public type: string 
     public filter_val: string | number
     public get $filter_val() {
       return Number(this.filter_val)
     }
-    public content: _jmComic.RawCommonComic[]
+    public content: (_jmComic.RawCommonComic | _jmBook.RawCommonBook)[]
     public get $content() {
-      return this.content.map(createCommonToUniItem)
+      return this.type == 'library' ?
+        this.content.map(<any>createCommonBookToItem) :
+        this.content.map(<any>createCommonToUniItem)
     }
     constructor(v: RawPromote) {
       this.id = v.id
