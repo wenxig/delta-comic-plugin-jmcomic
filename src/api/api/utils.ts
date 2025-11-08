@@ -1,11 +1,24 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
-import { ceil, isEmpty, uniq } from "es-toolkit/compat"
+import { ceil, isArray, isEmpty, isString, uniq } from "es-toolkit/compat"
 import { JmBlogPage, JmBookPage, JmComicPage } from "../page"
-import { Utils } from "delta-comic-core"
+import { Utils, type uni } from "delta-comic-core"
 import dayjs from "dayjs"
+import { UserOutlined } from "@vicons/antd"
+import { DrawOutlined } from "@vicons/material"
 
 export const spiltUsers = (userString = '') => userString.split(/\,|，|\&|\||、|＆|(\sand\s)|(\s和\s)|(\s[xX]\s)/ig).filter(Boolean).map(v => v.trim()).filter(Boolean)
+
+const isCosplay = (tags: string[] | string) => tags.includes('COSPLAY') || tags.includes('cosplay')
+const createAuthor = (item: { author: string | string[], tags?: string | string[] }) => (isString(item.author) ? spiltUsers(item.author) : item.author).map(v => ({
+  label: v,
+  description: item.tags ? (isCosplay(item.tags) ? 'coser' : '作者') : '作者',
+  icon: item.tags ? (isCosplay(item.tags) ? UserOutlined : DrawOutlined) : UserOutlined,
+  actions: [
+    'search'
+  ],
+  subscribe: 'keyword'
+}))
 
 export const createLessToUniItem = (comic: jm.comic.RawLessComic) => new jm.comic.JmItem({
   $$meta: {
@@ -48,7 +61,7 @@ export const createCommonToUniItem = (comic: jm.comic.RawCommonComic) => new jm.
     comic
   },
   $$plugin: pluginName,
-  author: spiltUsers(comic.author),
+  author: createAuthor(comic),
   categories: uniq([comic.category.title ?? '', comic.category_sub.title ?? '']).filter(v => !isEmpty(v)).map(v => ({
     name: v,
     group: '分类',
@@ -84,7 +97,7 @@ export const createRecommendToUniItem = (comic: jm.comic.RawRecommendComic) => n
     comic
   },
   $$plugin: pluginName,
-  author: spiltUsers(comic.author),
+  author: createAuthor(comic),
   categories: [],
   cover: {
     $$plugin: pluginName,
@@ -110,7 +123,7 @@ export const createFullToUniItem = (comic: jm.comic.RawFullComic) => new jm.comi
     comic
   },
   $$plugin: pluginName,
-  author: comic.author,
+  author: createAuthor(comic),
   categories: comic.tags.filter(v => !isEmpty(v)).map(v => ({
     name: v,
     group: '标签',
@@ -167,7 +180,14 @@ export const createCommonBlogToUniItem = (blog: jm.blog.RawCommonBlog, searchSou
   $$meta: {
     raw: blog
   },
-  author: [blog.username],
+  author: [{
+    label: blog.username,
+    description: '作者',
+    icon: UserOutlined,
+    $$meta: {
+      user: blog
+    }
+  }],
   commentSendable: true,
   categories: blog.tags.flatMap(v => v.split(',')).map(v => ({
     name: v,
@@ -204,7 +224,18 @@ export const createFullBlogToUniItem = (blog: jm.blog.RawFullBlog, searchSource:
   $$meta: {
     raw: blog
   },
-  author: [blog.username],
+  author: [{
+    label: blog.nickname,
+    description: '作者',
+    icon: {
+      $$plugin: pluginName,
+      forkNamespace: 'default',
+      path: blog.user_photo
+    },
+    $$meta: {
+      user: blog
+    }
+  }],
   commentSendable: true,
   categories: blog.tags.flatMap(v => v.split(',')).map(v => ({
     name: v,
@@ -242,7 +273,18 @@ export const createCommonBookToItem = (book: jm.book.RawCommonBook) => new jm.bo
   $$meta: {
     raw: book
   },
-  author: [book.author],
+  author: [{
+    label: book.author,
+    description: '作者',
+    icon: {
+      $$plugin: pluginName,
+      forkNamespace: 'default',
+      path: book.image
+    },
+    $$meta: {
+      user: book
+    }
+  }],
   commentSendable: false,
   categories: [],
   contentType: JmBookPage.contentType,
@@ -276,7 +318,18 @@ export const createListBookToItem = (book: jm.book.RawListBook) => new jm.book.J
       path: book.background_image
     }
   },
-  author: [book.author_name],
+  author: [{
+    label: book.author_name,
+    description: '作者',
+    icon: {
+      $$plugin: pluginName,
+      forkNamespace: 'default',
+      path: book.author_avatar
+    },
+    $$meta: {
+      user: book
+    }
+  }],
   commentSendable: false,
   categories: [],
   contentType: JmBookPage.contentType,

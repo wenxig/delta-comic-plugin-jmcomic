@@ -1,9 +1,9 @@
 import "@/index.css"
-import { coreModule, definePlugin, requireDepend, uni, Utils } from "delta-comic-core"
+import { coreModule, definePlugin, requireDepend, uni, Utils, type PluginConfigSubscribe } from "delta-comic-core"
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
 import { api, image } from "./api/forks"
-import { inRange, isString } from 'es-toolkit/compat'
+import { first, inRange, isEmpty, isString } from 'es-toolkit/compat'
 import axios, { formToJSON } from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
@@ -16,7 +16,7 @@ import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
 import BlogLayout from "./components/blogLayout.vue"
 import TabbarBlog from "./components/tabbarBlog.vue"
-import { BadgeOutlined, CategoryOutlined, CategoryRound } from "@vicons/material"
+import { BadgeOutlined, CategoryOutlined, CategoryRound, SearchOutlined } from "@vicons/material"
 import Buy from "./components/badge/buy.vue"
 import BadgeEdit from './components/badge/edit.vue'
 import Select from "./components/title/select.vue"
@@ -239,7 +239,16 @@ definePlugin({
         name: '更改称号',
         page: Select
       }]
-    }]
+    }],
+    authorActions: {
+      search: {
+        name: '搜索',
+        call(author) {
+          return Utils.eventBus.SharedFunction.call('routeToSearch', author.label, 'keyword')
+        },
+        icon: SearchOutlined
+      }
+    }
   },
   otherProgress: [
     {
@@ -344,5 +353,46 @@ definePlugin({
     hotPage: {
       levelBoard: jm.api.search.getLevelboard()
     }
+  },
+  subscribe: {
+    keyword: {
+      getListStream: author => jm.api.search.utils.createKeywordStream(author.label, ''),
+      getUpdateList(olds, signal) {
+        return diff(this, olds, signal)
+      },
+    },
   }
 })
+
+const diff = async (that: PluginConfigSubscribe, olds: Parameters<PluginConfigSubscribe['getUpdateList']>[0], signal?: AbortSignal) => {
+  const allList = await Promise.all(olds.map(async v => {
+    const stream = that.getListStream(v.author)
+    signal?.addEventListener('abort', () => stream.stop())
+    const news = (await stream.next()).value
+    if (!news) throw new Error(`[subscribe] ${v.author.label} is void!`)
+    return {
+      author: v.author,
+      list: news,
+    }
+  }))
+  const changedAuthors = new Array<uni.item.Author>()
+  for (const item of allList) {
+    const key = item.author.label
+    const old = olds.find(o => o.author.label === key)
+
+    const newFirst = first(item.list)
+    const oldFirst = first(old?.list)
+
+    let changed = false
+    if (oldFirst && newFirst)
+      changed = newFirst.id !== oldFirst.id
+    else
+      changed = true
+    if (changed) changedAuthors.push(item.author)
+  }
+
+  return {
+    isUpdated: isEmpty(changedAuthors),
+    whichUpdated: changedAuthors
+  }
+}

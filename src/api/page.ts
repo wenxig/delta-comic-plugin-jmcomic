@@ -6,17 +6,16 @@ import { defineComponent, h } from "vue"
 
 const { view } = requireDepend(coreModule)
 
-export class JmComicPage extends uni.content.ContentPage {
+export class JmComicPage extends uni.content.ContentImagePage {
   public static contentType = uni.content.ContentPage.toContentTypeString({
     name: 'comic',
     plugin: pluginName
   })
   public override plugin = pluginName
   public override contentType = uni.content.ContentPage.toContentType(JmComicPage.contentType)
-  public images = Utils.data.PromiseContent.withResolvers<uni.image.Image[]>()
-  public override loadAll() {
+  public override loadAll(signal?: AbortSignal) {
     return Promise.all([
-      this.detail.content.isLoading.value || this.detail.content.loadPromise(jm.api.comic.getComic(this.ep).then(v => {
+      this.detail.content.isLoading.value || this.detail.content.loadPromise(jm.api.comic.getComic(this.ep, signal).then(v => {
         const comic: jm.comic.RawFullComic = v.$$meta.comic
         this.eps.resolve(comic.series.map(v => new uni.ep.Ep({
           $$plugin: pluginName,
@@ -31,12 +30,15 @@ export class JmComicPage extends uni.content.ContentPage {
         this.pid.resolve(v.id)
         return v
       })),
-      this.images.content.isLoading.value || this.images.content.loadPromise(jm.api.comic.getComicPages(this.id)),
+      this.images.content.isLoading.value || this.images.content.loadPromise(jm.api.comic.getComicPages(this.id, signal)),
     ])
   }
   public override comments = jm.api.comic.createCommentsStream(this.id)
-  public override reloadAll(): any {
-    throw new Error("Method not implemented.")
+  public override reloadAll(signal?: AbortSignal) {
+    this.eps.reset(true)
+    this.recommends.reset(true)
+    this.detail.reset(true)
+    return this.loadAll(signal)
   }
   public override loadAllOffline(): Promise<any> {
     throw new Error("Method not implemented.")
