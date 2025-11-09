@@ -44,8 +44,8 @@ const { comp: { ItemCard } } = requireDepend(coreModule)
       <NIcon color="var(--van-text-color-2)" size="14px">
         <DrawOutlined />
       </NIcon>
-      <span class="ml-0.5 text-xs van-ellipsis w-2/3 text-(--van-text-color-2)">
-        {{ item.author[0] }}
+      <span class="ml-0.5 text-xs van-ellipsis w-full text-(--van-text-color-2)">
+        {{ item.author[0].label }}
         <template v-if="item.author.length > 1">
           等联合创作
         </template>
@@ -55,18 +55,18 @@ const { comp: { ItemCard } } = requireDepend(coreModule)
       <div class="flex gap-0.5 **:text-nowrap">
         <VanTag type="primary" plain v-for="category of item.categories">{{ category.name }}</VanTag>
       </div>
-      <div class="flex flex-nowrap items-center *:text-nowrap van-ellipsis mt-0.5">
+      <div class="flex flex-nowrap items-center *:text-nowrap van-ellipsis mt-0.5"
+        v-if="item.$updateTime.get('year') != 1970">
         <NIcon color="var(--van-text-color-2)" size="14px">
           <AccessTimeRound />
         </NIcon>
-        <span class="mr-2"
-          v-if="item.$updateTime.get('year') != 1970">{{ Utils.translate.createDateString(item.$updateTime) }}</span>
+        <span class="mr-2">{{ Utils.translate.createDateString(item.$updateTime) }}</span>
       </div>
       <div class="flex flex-nowrap items-center *:text-nowrap van-ellipsis">
         <NIcon color="var(--van-text-color-2)" size="14px">
           <DrawOutlined />
         </NIcon>
-        <span v-for="author of item.author" class="mr-2">{{ author }}</span>
+        <span v-for="author of item.author" class="mr-2">{{ author.label }}</span>
       </div>
     </template>
   </ItemCard>
