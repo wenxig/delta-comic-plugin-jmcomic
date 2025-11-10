@@ -13,7 +13,7 @@ const isCosplay = (tags: string[] | string) => tags.includes('COSPLAY') || tags.
 const createAuthor = (item: { author: string | string[], tags?: string | string[] }) => (isString(item.author) ? spiltUsers(item.author) : item.author).map(v => ({
   label: v,
   description: item.tags ? (isCosplay(item.tags) ? 'coser' : '作者') : '作者',
-  icon: item.tags ? (isCosplay(item.tags) ? UserOutlined : DrawOutlined) : UserOutlined,
+  icon: item.tags ? (isCosplay(item.tags) ? 'coser' : 'draw') : 'coser',
   actions: [
     'search'
   ],
@@ -183,7 +183,7 @@ export const createCommonBlogToUniItem = (blog: jm.blog.RawCommonBlog, searchSou
   author: [{
     label: blog.username,
     description: '作者',
-    icon: UserOutlined,
+    icon: 'coser',
     $$meta: {
       user: blog
     }
@@ -230,7 +230,7 @@ export const createFullBlogToUniItem = (blog: jm.blog.RawFullBlog, searchSource:
     icon: {
       $$plugin: pluginName,
       forkNamespace: 'default',
-      path: blog.user_photo
+      path: blog.user_photo ?? ''
     },
     $$meta: {
       user: blog

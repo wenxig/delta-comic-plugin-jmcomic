@@ -16,10 +16,11 @@ import Tabbar from "./components/tabbar.vue"
 import WeekPromote from "./components/weekPromote.vue"
 import BlogLayout from "./components/blogLayout.vue"
 import TabbarBlog from "./components/tabbarBlog.vue"
-import { BadgeOutlined, CategoryOutlined, CategoryRound, SearchOutlined } from "@vicons/material"
+import { BadgeOutlined, CategoryOutlined, CategoryRound, DrawOutlined, SearchOutlined } from "@vicons/material"
 import Buy from "./components/badge/buy.vue"
 import BadgeEdit from './components/badge/edit.vue'
 import Select from "./components/title/select.vue"
+import { UserOutlined } from "@vicons/antd"
 const testAxios = axios.create({
   timeout: 10000,
   method: 'GET',
@@ -207,6 +208,10 @@ definePlugin({
       upload(items) {
         return Promise.all(items.map(item => jm.api.user.favouriteComic(item.id)))
       },
+    },
+    authorIcon: {
+      coser: UserOutlined,
+      draw: DrawOutlined,
     },
     userActionPages: [{
       title: '成就',
