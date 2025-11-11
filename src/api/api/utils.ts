@@ -1,11 +1,9 @@
 import { jm } from ".."
 import { pluginName } from "@/symbol"
-import { ceil, isArray, isEmpty, isString, uniq } from "es-toolkit/compat"
+import { ceil, isEmpty, isString, uniq } from "es-toolkit/compat"
 import { JmBlogPage, JmBookPage, JmComicPage } from "../page"
-import { Utils, type uni } from "delta-comic-core"
+import { Utils } from "delta-comic-core"
 import dayjs from "dayjs"
-import { UserOutlined } from "@vicons/antd"
-import { DrawOutlined } from "@vicons/material"
 
 export const spiltUsers = (userString = '') => userString.split(/\,|，|\&|\||、|＆|(\sand\s)|(\s和\s)|(\s[xX]\s)/ig).filter(Boolean).map(v => v.trim()).filter(Boolean)
 
@@ -17,7 +15,8 @@ const createAuthor = (item: { author: string | string[], tags?: string | string[
   actions: [
     'search'
   ],
-  subscribe: 'keyword'
+  subscribe: 'keyword',
+  $$plugin: pluginName
 }))
 
 export const createLessToUniItem = (comic: jm.comic.RawLessComic) => new jm.comic.JmItem({
@@ -186,7 +185,8 @@ export const createCommonBlogToUniItem = (blog: jm.blog.RawCommonBlog, searchSou
     icon: 'coser',
     $$meta: {
       user: blog
-    }
+    },
+    $$plugin: pluginName
   }],
   commentSendable: true,
   categories: blog.tags.flatMap(v => v.split(',')).map(v => ({
@@ -234,7 +234,8 @@ export const createFullBlogToUniItem = (blog: jm.blog.RawFullBlog, searchSource:
     },
     $$meta: {
       user: blog
-    }
+    },
+  $$plugin: pluginName
   }],
   commentSendable: true,
   categories: blog.tags.flatMap(v => v.split(',')).map(v => ({
@@ -283,7 +284,8 @@ export const createCommonBookToItem = (book: jm.book.RawCommonBook) => new jm.bo
     },
     $$meta: {
       user: book
-    }
+    },
+    $$plugin: pluginName
   }],
   commentSendable: false,
   categories: [],
@@ -328,7 +330,8 @@ export const createListBookToItem = (book: jm.book.RawListBook) => new jm.book.J
     },
     $$meta: {
       user: book
-    }
+    },
+    $$plugin: pluginName
   }],
   commentSendable: false,
   categories: [],
