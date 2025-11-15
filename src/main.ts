@@ -181,21 +181,19 @@ definePlugin({
     }
   },
   content: {
-    contentPage: {
-      [JmComicPage.contentType]: JmComicPage,
-      [JmBlogPage.contentType]: JmBlogPage
+    [JmComicPage.contentType]: {
+      commentRow: CommentRow,
+      contentPage: JmComicPage,
+      layout: layout.Default,
+      itemCard: Card,
+      itemTranslator: raw => jm.comic.JmItem.create(raw)
     },
-    layout: {
-      [JmComicPage.contentType]: layout.Default,
-      [JmBlogPage.contentType]: BlogLayout
-    },
-    itemCard: {
-      [JmComicPage.contentType]: Card,
-      [JmBlogPage.contentType]: Card
-    },
-    commentRow: {
-      [JmComicPage.contentType]: CommentRow,
-      [JmBlogPage.contentType]: CommentRow
+    [JmBlogPage.contentType]: {
+      commentRow: CommentRow,
+      contentPage: JmBlogPage,
+      layout: BlogLayout,
+      itemCard: Card,
+      itemTranslator: raw => jm.comic.JmItem.create(raw)
     }
   },
   user: {
