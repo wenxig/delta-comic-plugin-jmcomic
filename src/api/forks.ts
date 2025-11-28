@@ -13,7 +13,7 @@ export const apiGetter = [
 export const api = [
   // "https://cdn-msp12.jmdanjonproxy.xyz/",
   "https://www.cdnuc.vip",
-  "https://www.cdnplaystation6.org",
+  // "https://www.cdnplaystation6.org",
   "https://www.cdnuc.org",
   "https://www.cdnmhwscc.vip"
 ]

@@ -62,11 +62,13 @@ const reorderBadge = (item: jm.user.RawBadge[]) => Utils.message.createLoadingMe
 
   isReordering.value = false
 })).catch(() => { isReordering.value = false })
+
+const config = Store.useConfig()
 </script>
 
 <template>
   <Def v-slot="{ item, index }">
-    <div
+    <div :class=[config.isDark && '!bg-white/10' ]
       class="flex flex-col items-start justify-center aspect-7/3 bg-(--van-gray-1) rounded relative overflow-hidden shrink-0">
       <Comp.Image :src="uni.image.Image.create({
         $$plugin: pluginName,
