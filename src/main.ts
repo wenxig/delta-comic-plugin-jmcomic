@@ -247,7 +247,7 @@ definePlugin({
       search: {
         name: '搜索',
         call(author) {
-          return Utils.eventBus.SharedFunction.call('routeToSearch', author.label, 'keyword')
+          return Utils.eventBus.SharedFunction.call('routeToSearch', author.label, `${pluginName}:keyword`)
         },
         icon: SearchOutlined
       }

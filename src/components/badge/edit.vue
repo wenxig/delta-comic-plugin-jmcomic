@@ -68,8 +68,9 @@ const config = Store.useConfig()
 
 <template>
   <Def v-slot="{ item, index }">
-    <div :class=[config.isDark && '!bg-white/10' ]
-      class="flex flex-col items-start justify-center aspect-7/3 bg-(--van-gray-1) rounded relative overflow-hidden shrink-0">
+    <div
+      class="flex flex-col items-start justify-center aspect-7/3 bg-(--van-gray-1) rounded relative overflow-hidden shrink-0"
+      :class="[config.isDark && '!bg-white/10' ]">
       <Comp.Image :src="uni.image.Image.create({
         $$plugin: pluginName,
         forkNamespace: 'default',
