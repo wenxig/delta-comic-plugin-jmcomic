@@ -20,7 +20,7 @@ const { comp } = requireDepend(coreModule)
 </script>
 
 <template>
-  <comp.CommentRow :comment :parentComment>
+  <comp.CommentRow :comment :parentComment @click="$emit('click',$event)" @clickUser="$emit('clickUser',$event)">
     <template #userExtra>
       <span class="mr-1 text-[11px] text-(--nui-primary-color) font-normal">
         Lv{{ raw.expInfo.level }}
