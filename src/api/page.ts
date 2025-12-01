@@ -40,10 +40,10 @@ export class JmComicPage extends uni.content.ContentImagePage {
     this.detail.reset(true)
     return this.loadAll(signal)
   }
-  public override loadAllOffline(): Promise<any> {
+  public override loadAllOffline(_save: any): never {
     throw new Error("Method not implemented.")
   }
-  public override exportOffline(_save: any): Promise<void> {
+  public override exportOffline(): never {
     throw new Error("Method not implemented.")
   }
   public ViewComp
@@ -84,10 +84,10 @@ export class JmBlogPage extends uni.content.ContentPage {
   public override reloadAll(): any {
     throw new Error("Method not implemented.")
   }
-  public override loadAllOffline(): Promise<any> {
+  public override loadAllOffline(_save: any): never {
     throw new Error("Method not implemented.")
   }
-  public override exportOffline(_save: any): Promise<void> {
+  public override exportOffline(): never {
     throw new Error("Method not implemented.")
   }
   public ViewComp = defineComponent<any>(() => {
@@ -124,10 +124,10 @@ export class JmBookPage extends uni.content.ContentPage {
   public override reloadAll(): any {
     throw new Error("Method not implemented.")
   }
-  public override loadAllOffline(): Promise<any> {
+  public override loadAllOffline(_save: any): never {
     throw new Error("Method not implemented.")
   }
-  public override exportOffline(_save: any): Promise<void> {
+  public override exportOffline(): never {
     throw new Error("Method not implemented.")
   }
   public ViewComp = defineComponent<any>(() => {

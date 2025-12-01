@@ -97,7 +97,7 @@ definePlugin({
             throw new Error("Decryption failed")
           }
           if (isString(res.data) && res.data.startsWith('Could not connect to mysql! Please check your database settings!')) {
-            throw res.data
+            return ins(res.config)
           }
           if (!res.data.data) return res
           if (isString(res.data)) {
@@ -286,16 +286,16 @@ definePlugin({
             title: c.name,
             namespace: v.name,
             search: {
-              methodId: '',
-              input: '',
+              methodId: 'keyword',
+              input: c.name,
               sort: ''
             }
           }))), ...cate.blocks.flatMap(v => v.content.map(c => ({
             title: c,
             namespace: v.title,
             search: {
-              methodId: '',
-              input: '',
+              methodId: 'keyword',
+              input: c,
               sort: ''
             }
           }))))
@@ -336,17 +336,17 @@ definePlugin({
           return []
         },
       },
-      category: {
-        name: '分类',
-        getStream(input, sort) {
-          return jm.api.search.utils.createCategoryStream(input, <jm.SortType>sort)
-        },
-        sorts: jm.sortMap,
-        defaultSort: '',
-        async getAutoComplete(_input, _signal) {
-          return []
-        },
-      }
+      // category: {
+      //   name: '分类',
+      //   getStream(input, sort) {
+      //     return jm.api.search.utils.createCategoryStream(input, <jm.SortType>sort)
+      //   },
+      //   sorts: jm.sortMap,
+      //   defaultSort: '',
+      //   async getAutoComplete(_input, _signal) {
+      //     return []
+      //   },
+      // }
     },
     tabbar: Object.entries(jm.api.blog.blogType).map(v => ({
       comp: TabbarBlog,
