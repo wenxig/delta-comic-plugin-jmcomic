@@ -3,7 +3,6 @@ import axios from "axios"
 import { MD5 } from "crypto-js"
 import { uni, Utils } from "delta-comic-core"
 import { padStart } from "es-toolkit/compat"
-import { useWebWorkerFn } from '@vueuse/core'
 
 export namespace _jmImage {
   const api = axios.create()

@@ -186,14 +186,14 @@ definePlugin({
       contentPage: JmComicPage,
       layout: layout.Default,
       itemCard: Card,
-      itemTranslator: raw => jm.comic.JmItem.create(raw)
+      itemTranslator: raw => new jm.comic.JmItem(raw)
     },
     [JmBlogPage.contentType]: {
       commentRow: CommentRow,
       contentPage: JmBlogPage,
       layout: BlogLayout,
       itemCard: Card,
-      itemTranslator: raw => jm.comic.JmItem.create(raw)
+      itemTranslator: raw => new jm.blog.JmBlog(raw)
     }
   },
   user: {
@@ -247,7 +247,7 @@ definePlugin({
       search: {
         name: '搜索',
         call(author) {
-          return Utils.eventBus.SharedFunction.call('routeToSearch', author.label, `${pluginName}:keyword`)
+          return Utils.eventBus.SharedFunction.call('routeToSearch', author.label, [pluginName, 'keyword'])
         },
         icon: SearchOutlined
       }
@@ -282,7 +282,7 @@ definePlugin({
           jmStore.useredit.value = useredit
 
           console.log('cate', cate)
-          uni.content.ContentPage.setCategories(pluginName, ...cate.categories.filter(v => !!v.sub_categories).flatMap(v => v.sub_categories!.map(c => ({
+          uni.content.ContentPage.addCategories(pluginName, ...cate.categories.filter(v => !!v.sub_categories).flatMap(v => v.sub_categories!.map(c => ({
             title: c.name,
             namespace: v.name,
             search: {
@@ -302,7 +302,7 @@ definePlugin({
 
           console.log('wb', wb)
           jmStore.wb.value = wb
-          uni.content.ContentPage.setTabbar(pluginName, {
+          uni.content.ContentPage.addTabbar(pluginName, {
             comp: WeekPromote,
             id: 'weekPromote',
             title: '每周推荐'
@@ -310,7 +310,7 @@ definePlugin({
 
           console.log('promote', promote)
           jmStore.promotes.value = promote
-          uni.content.ContentPage.setTabbar(pluginName, ...promote.map(v => ({
+          uni.content.ContentPage.addTabbar(pluginName, ...promote.map(v => ({
             title: v.title,
             id: v.id,
             comp: Tabbar

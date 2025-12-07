@@ -7,12 +7,9 @@ import { defineComponent, h } from "vue"
 const { view } = requireDepend(coreModule)
 
 export class JmComicPage extends uni.content.ContentImagePage {
-  public static contentType = uni.content.ContentPage.toContentTypeString({
-    name: 'comic',
-    plugin: pluginName
-  })
+  public static contentType = uni.content.ContentPage.contentPage.toString([pluginName, 'comic'])
   public override plugin = pluginName
-  public override contentType = uni.content.ContentPage.toContentType(JmComicPage.contentType)
+  public override contentType = uni.content.ContentPage.contentPage.toJSON(JmComicPage.contentType)
   public override loadAll(signal?: AbortSignal) {
     return Promise.all([
       this.detail.content.isLoading.value || this.detail.content.loadPromise(jm.api.comic.getComic(this.ep, signal).then(v => {
@@ -55,12 +52,9 @@ export class JmComicPage extends uni.content.ContentImagePage {
 
 
 export class JmBlogPage extends uni.content.ContentPage {
-  public static contentType = uni.content.ContentPage.toContentTypeString({
-    name: 'blog',
-    plugin: pluginName
-  })
+  public static contentType = uni.content.ContentPage.contentPage.toString([pluginName, 'blog'])
   public override plugin = pluginName
-  public override contentType = uni.content.ContentPage.toContentType(JmBlogPage.contentType)
+  public override contentType = uni.content.ContentPage.contentPage.toJSON(JmComicPage.contentType)
   public content = Utils.data.PromiseContent.withResolvers<string>()
   public override loadAll() {
     return Promise.all([
@@ -99,12 +93,9 @@ export class JmBlogPage extends uni.content.ContentPage {
 }
 
 export class JmBookPage extends uni.content.ContentPage {
-  public static contentType = uni.content.ContentPage.toContentTypeString({
-    name: 'book',
-    plugin: pluginName
-  })
+  public static contentType = uni.content.ContentPage.contentPage.toString([pluginName, 'book'])
   public override plugin = pluginName
-  public override contentType = uni.content.ContentPage.toContentType(JmBlogPage.contentType)
+  public override contentType = uni.content.ContentPage.contentPage.toJSON(JmComicPage.contentType)
   public override loadAll() {
     return Promise.all([
       // this.detail.content.isLoading.value || this.detail.content.loadPromise(jm.api.book.get(this.ep).then(v => {
