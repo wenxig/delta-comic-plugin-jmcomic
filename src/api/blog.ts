@@ -33,7 +33,7 @@ export namespace _jmBlog {
     override like(signal?: AbortSignal): PromiseLike<boolean> {
       return jm.api.blog.likeBlog(this.id, signal)
     }
-    override report(signal?: AbortSignal): PromiseLike<any> {
+    override report(_signal?: AbortSignal): PromiseLike<any> {
       throw new Error("Method not implemented.")
     }
     override sendComment(text: string, signal?: AbortSignal): PromiseLike<any> {

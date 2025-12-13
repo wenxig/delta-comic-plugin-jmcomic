@@ -54,7 +54,7 @@ export class JmComicPage extends uni.content.ContentImagePage {
 export class JmBlogPage extends uni.content.ContentPage {
   public static contentType = uni.content.ContentPage.contentPage.toString([pluginName, 'blog'])
   public override plugin = pluginName
-  public override contentType = uni.content.ContentPage.contentPage.toJSON(JmComicPage.contentType)
+  public override contentType = uni.content.ContentPage.contentPage.toJSON(JmBlogPage.contentType)
   public content = Utils.data.PromiseContent.withResolvers<string>()
   public override loadAll() {
     return Promise.all([
