@@ -355,7 +355,18 @@ definePlugin({
     })),
     hotPage: {
       levelBoard: jm.api.search.getLevelboard()
-    }
+    },
+    barcode: [{
+      name: '漫画',
+      match(searchText) {
+        return /jm\d+/i.test(searchText)
+      },
+      async getContent(searchText, signal) {
+        const code = searchText.match(/\d+/)?.[0] ?? '350234'
+        const info = await jm.api.comic.getComic(code, signal)
+        return [info.contentType, info.id, info.thisEp.index, info]
+      },
+    }]
   },
   subscribe: {
     keyword: {

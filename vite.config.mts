@@ -27,7 +27,7 @@ export default defineConfig(({ command }) => ({
       name: 'jmcomic',
       displayName: '禁漫天堂',
       version: _package.version,
-      supportCoreVersion:">=0.2.2",
+      supportCoreVersion:">=0.3.4",
       author: _package.author.name,
       description: _package.description,
       require: ['core']
