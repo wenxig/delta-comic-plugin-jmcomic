@@ -2,8 +2,8 @@ import "@/index.css"
 import { coreModule, definePlugin, requireDepend, uni, Utils, type PluginConfigSubscribe } from "delta-comic-core"
 import { pluginName } from "./symbol"
 import { AES, MD5, enc, mode } from 'crypto-js'
-import { api, image } from "./api/forks"
-import { first, inRange, isEmpty, isString } from 'es-toolkit/compat'
+import { getApiFork, image } from "./api/forks"
+import { first, inRange, isArray, isEmpty, isString } from 'es-toolkit/compat'
 import axios, { formToJSON } from 'axios'
 import { jmStore } from "./store"
 import { jm } from "./api"
@@ -36,15 +36,16 @@ definePlugin({
   name: pluginName,
   api: {
     api: {
-      forks: () => Promise.resolve(api),
+      forks: getApiFork,
       test: (fork, signal) => testAxios.get(`${fork}/promote_list`, { signal })
     }
   },
-  image: {
-    forks: {
-      default: image
-    },
-    test: '/media/photos/1205243/00001.webp',
+  resource: {
+    types: [{
+      test: (url, signal) => axios.get(`${url}/media/photos/1205243/00001.webp`, { signal }),
+      urls: image,
+      type: 'default'
+    }],
     process: {
       comicDecode: jm.image.decoder
     }
@@ -99,6 +100,9 @@ definePlugin({
           if (isString(res.data) && res.data.startsWith('Could not connect to mysql! Please check your database settings!')) {
             return ins(res.config)
           }
+          if (isArray(res.data.data) && res.data.data.length == 0) {
+            throw new Error(JSON.stringify(res.data))
+          }
           if (!res.data.data) return res
           if (isString(res.data)) {
             res.data = JSON.parse(res.data.replace(/}\[.+/gims, '}'))
@@ -131,12 +135,18 @@ definePlugin({
           info: '密码'
         }
       })
-      const res = await jm.api.auth.login(form)
-      jmStore.loginToken.value = res.customUser.user.jwttoken
-      jmStore.loginAvs.value = res.customUser.user.s
-      jmStore.user.value = res
-      console.log('login:', res, jmStore.user.value)
-      uni.user.User.userBase.set(pluginName, jmStore.user.value!)
+      try {
+        const res = await jm.api.auth.login(form)
+        jmStore.loginToken.value = res.customUser.user.jwttoken
+        jmStore.loginAvs.value = res.customUser.user.s
+        jmStore.user.value = res
+        console.log('login:', res, jmStore.user.value)
+        uni.user.User.userBase.set(pluginName, jmStore.user.value!)
+      } catch {
+        jmStore.loginData.value.password = ''
+        window.$message.warning('自动登录失败，尝试手动登录')
+        return this.logIn(by)
+      }
     },
     async signUp(by) {
       const form = await by.form({
