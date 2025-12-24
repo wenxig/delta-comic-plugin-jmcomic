@@ -16,8 +16,8 @@ export namespace _jmUser {
     public get $content() {
       return uni.image.Image.create({
         $$plugin: pluginName,
-        forkNamespace: 'default',
-        path: this.content
+        type: 'default',
+        pathname: this.content
       })
     }
     public id: string
@@ -98,8 +98,8 @@ export namespace _jmUser {
         name: v.username,
         avatar: {
           $$plugin: pluginName,
-          forkNamespace: 'default',
-          path: `/media/users/${v.uid}.jpg`
+          type: 'default',
+          pathname: `/media/users/${v.uid}.jpg`
         },
         $$plugin: pluginName
       })
@@ -121,8 +121,9 @@ export namespace _jmUser {
         name: c.username,
         avatar: c.photo.includes('nopic') ? undefined : {
           $$plugin: pluginName,
-          forkNamespace: 'default',
-          path: `/media/users/${c.photo}`
+          type: 'default',
+          pathname: `/media/users/${c.photo}`,
+
         },
         $$plugin: pluginName
       })
@@ -144,8 +145,8 @@ export namespace _jmUser {
         name: c.username,
         avatar: c.photo.includes('nopic') ? undefined : {
           $$plugin: pluginName,
-          forkNamespace: 'default',
-          path: `/media/users/${c.uid}.jpg`
+          type: 'default',
+          pathname: `/media/users/${c.uid}.jpg`
         },
         $$plugin: pluginName
       })

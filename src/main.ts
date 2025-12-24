@@ -135,18 +135,12 @@ definePlugin({
           info: '密码'
         }
       })
-      try {
-        const res = await jm.api.auth.login(form)
-        jmStore.loginToken.value = res.customUser.user.jwttoken
-        jmStore.loginAvs.value = res.customUser.user.s
-        jmStore.user.value = res
-        console.log('login:', res, jmStore.user.value)
-        uni.user.User.userBase.set(pluginName, jmStore.user.value!)
-      } catch {
-        jmStore.loginData.value.password = ''
-        window.$message.warning('自动登录失败，尝试手动登录')
-        return this.logIn(by)
-      }
+      const res = await jm.api.auth.login(form)
+      jmStore.loginToken.value = res.customUser.user.jwttoken
+      jmStore.loginAvs.value = res.customUser.user.s
+      jmStore.user.value = res
+      console.log('login:', res, jmStore.user.value)
+      uni.user.User.userBase.set(pluginName, jmStore.user.value!)
     },
     async signUp(by) {
       const form = await by.form({

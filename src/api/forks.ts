@@ -15,7 +15,7 @@ export const apiGetter = [
 ]
 export const getApiFork = async () => {
   const api = Utils.request.createAxios(() => apiGetter[0])
-  return (<{ Server: string[] }>convertData(await api.get<string>('/newsvr-2025.txt'))).Server
+  return (<{ Server: string[] }>convertData(await api.get<string>('/newsvr-2025.txt'))).Server.map(v => `https://${v}`)
 }
 
 export function convertData(inputBase64: string, secret: string = "diosfjckwpqpdfjkvnqQjsik") {
