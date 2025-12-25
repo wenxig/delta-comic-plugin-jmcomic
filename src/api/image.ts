@@ -1,4 +1,3 @@
-import { pluginName } from "@/symbol"
 import axios from "axios"
 import { MD5 } from "crypto-js"
 import { uni, Utils } from "delta-comic-core"
@@ -34,7 +33,7 @@ export namespace _jmImage {
     cache.set(nowPath, promise.promise)
 
     // 1) 获取 blob（确保图片允许 CORS）
-    const blob = await Utils.request.utilInterceptors.useForceRetry(() => api.get<Blob>(`${uni.image.Image.activeFork.get(`${pluginName}:${img.forkNamespace}`)}/${nowPath}`, {
+    const blob = await Utils.request.utilInterceptors.useForceRetry(() => api.get<Blob>(`${img.getThisFork()}/${nowPath}`, {
       responseType: 'blob'
     }))
     const bitmap = await createImageBitmap(blob)

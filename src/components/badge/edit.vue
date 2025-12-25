@@ -70,7 +70,7 @@ const config = Store.useConfig()
   <Def v-slot="{ item, index }">
     <div
       class="flex flex-col items-start justify-center aspect-7/3 bg-(--van-gray-1) rounded relative overflow-hidden shrink-0"
-      :class="[config.isDark && '!bg-white/10' ]">
+      :class="[config.isDark && 'bg-white/10!' ]">
       <Comp.Image :src="uni.image.Image.create({
         $$plugin: pluginName,
         forkNamespace: 'default',
@@ -79,7 +79,8 @@ const config = Store.useConfig()
       <div
         class="absolute bottom-0 translate-y-1/4 right-0 translate-x-1/6 text-(--p-color) z-0 text-[20vw] italic font-bold opacity-20"
         v-if="index">#{{ index }}</div>
-      <div class="absolute bottom-2 bg-white !right-1 rounded-full px-1 shadow text-nowrap opacity-85">{{ item.name }}
+      <div class="absolute bottom-2 bg-white !right-1 rounded-full px-1 shadow text-nowrap opacity-55"
+        :class="[config.isDark && '!bg-black']">{{ item.name }}
       </div>
     </div>
   </Def>
